@@ -20,7 +20,7 @@ class Sponsors
     private ?string $name = null;
 
     #[ORM\Column(type: Types::BLOB, nullable: true)]
-    private $logo = null;
+    private $logo;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $website_url = null;

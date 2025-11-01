@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use App\Enum\Type;
+use App\Enum\Target;
 use App\Repository\AnnoncesRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -25,8 +25,8 @@ class Annonces
     #[ORM\JoinColumn(nullable: false)]
     private ?User $sent_by = null;
 
-    #[ORM\Column(enumType: Type::class)]
-    private ?Type $sent_to = null;
+    #[ORM\Column(enumType: Target::class)]
+    private ?Target $sent_to = null;
 
     #[ORM\Column]
     private ?\DateTime $sent_at = null;
@@ -72,12 +72,12 @@ class Annonces
         return $this;
     }
 
-    public function getSentTo(): ?Type
+    public function getSentTo(): ?Target
     {
         return $this->sent_to;
     }
 
-    public function setSentTo(Type $sent_to): static
+    public function setSentTo(Target $sent_to): static
     {
         $this->sent_to = $sent_to;
 

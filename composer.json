@@ -94,8 +94,8 @@
         "fix:phpcs": [
             "php-cs-fixer fix"
         ],
-        "test:phpcs" : [
-            "php-cs-fixer fix --dry-run"
+        "test:phpcs": [
+            "php-cs-fixer fix --dry-run --diff --verbose"
         ],
         "fix:twigcs": [
             "twig-cs-fixer fix"

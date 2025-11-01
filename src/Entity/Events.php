@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\Type;
 use App\Repository\EventsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -49,6 +50,9 @@ class Events
      */
     #[ORM\OneToMany(targetEntity: Participants::class, mappedBy: 'event', orphanRemoval: true)]
     private Collection $participations;
+
+    #[ORM\Column(enumType: Type::class)]
+    private ?Type $type = null;
 
     public function __construct()
     {
@@ -198,6 +202,18 @@ class Events
                 $participation->setEvent(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getType(): ?Type
+    {
+        return $this->type;
+    }
+
+    public function setType(Type $type): static
+    {
+        $this->type = $type;
 
         return $this;
     }
