@@ -33,12 +33,14 @@ final class UserFactory extends PersistentProxyObjectFactory
     #[\Override]
     protected function defaults(): array|callable
     {
-        $roles = self::faker()->boolean(10) ? ['ROLE_USER', 'ROLE_ADMIN'] : ['ROLE_USER'];
+        $a = self::faker()->boolean(10);
+        $roles = $a ? ['ROLE_USER', 'ROLE_ADMIN'] : ['ROLE_USER'];
 
         return [
             'email' => self::faker()->email(),
             'password' => password_hash('Test123', PASSWORD_BCRYPT),
             'roles' => $roles,
+            'isAdmin' => $a,
             'username' => self::faker()->unique()->userName(),
         ];
     }

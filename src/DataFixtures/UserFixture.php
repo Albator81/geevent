@@ -15,8 +15,9 @@ class UserFixture extends Fixture
             'email' => 'jean@jean.fr',
             'password' => password_hash('Jean123', PASSWORD_BCRYPT),
             'roles' => ['ROLE_USER', 'ROLE_ADMIN'],
+            'isAdmin' => true,
         ]);
 
-        UserFactory::createMany(5);
+        UserFactory::createMany(25);
     }
 }

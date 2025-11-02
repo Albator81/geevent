@@ -54,6 +54,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Participants::class, mappedBy: 'participant', orphanRemoval: true)]
     private Collection $participations;
 
+    #[ORM\Column]
+    private ?bool $isAdmin = null;
+
     public function __construct()
     {
         $this->annonces = new ArrayCollection();
@@ -240,6 +243,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $participation->setParticipant(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isAdmin(): ?bool
+    {
+        return $this->isAdmin;
+    }
+
+    public function setIsAdmin(bool $isAdmin): static
+    {
+        $this->isAdmin = $isAdmin;
 
         return $this;
     }

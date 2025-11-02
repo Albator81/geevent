@@ -44,7 +44,7 @@ final class EventsFactory extends PersistentProxyObjectFactory
             'longitude' => self::faker()->longitude(),
             'startDatetime' => $start,
             'endDatetime' => $end,
-            'createdBy' => UserFactory::randomOrCreate(["roles" => ["ROLE_USER", "ROLE_ADMIN"]]),
+            'createdBy' => UserFactory::random(["isAdmin" => true]),
             'type' => self::faker()->randomElement(Type::cases()),
             'sponsors' => SponsorsFactory::randomRange(0, 3),
         ];
