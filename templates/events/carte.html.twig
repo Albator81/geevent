@@ -44,7 +44,7 @@
                 .bindPopup(popupContent)
 
             marker.on('click', function(e) {
-                map.setView(e.latlng, 15, { animate: true });
+                map.setView(e.latlng, map.getZoom() < 15 ? 15 : map.getZoom() , { animate: true });
             });
 
             {% if event.type.name == 'MEETUP' %}
