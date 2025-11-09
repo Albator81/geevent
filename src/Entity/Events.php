@@ -45,22 +45,23 @@ class Events
     #[ORM\ManyToMany(targetEntity: Sponsors::class, mappedBy: 'event')]
     private Collection $sponsors;
 
-    /**
-     * @var Collection<int, Participants>
-     */
-    #[ORM\OneToMany(targetEntity: Participants::class, mappedBy: 'event', orphanRemoval: true)]
-    private Collection $participations;
-
     #[ORM\Column(enumType: Type::class)]
     private ?Type $type = null;
 
     #[ORM\Column(length: 255)]
     private ?string $address = null;
 
+    /**
+     * @var Collection<int, User>
+     */
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'eventsJoined')]
+    private Collection $participants;
+
     public function __construct()
     {
         $this->sponsors = new ArrayCollection();
         $this->participations = new ArrayCollection();
+        $this->participants = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -179,36 +180,6 @@ class Events
         return $this;
     }
 
-    /**
-     * @return Collection<int, Participants>
-     */
-    public function getParticipations(): Collection
-    {
-        return $this->participations;
-    }
-
-    public function addParticipation(Participants $participation): static
-    {
-        if (!$this->participations->contains($participation)) {
-            $this->participations->add($participation);
-            $participation->setEvent($this);
-        }
-
-        return $this;
-    }
-
-    public function removeParticipation(Participants $participation): static
-    {
-        if ($this->participations->removeElement($participation)) {
-            // set the owning side to null (unless already changed)
-            if ($participation->getEvent() === $this) {
-                $participation->setEvent(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function getType(): ?Type
     {
         return $this->type;
@@ -229,6 +200,33 @@ class Events
     public function setAddress(string $address): static
     {
         $this->address = $address;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getParticipants(): Collection
+    {
+        return $this->participants;
+    }
+
+    public function addParticipant(User $participant): static
+    {
+        if (!$this->participants->contains($participant)) {
+            $this->participants->add($participant);
+            $participant->addEventsJoined($this);
+        }
+
+        return $this;
+    }
+
+    public function removeParticipant(User $participant): static
+    {
+        if ($this->participants->removeElement($participant)) {
+            $participant->removeEventsJoined($this);
+        }
 
         return $this;
     }

@@ -3,9 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Events;
-use App\Entity\Participants;
 use App\Repository\EventsRepository;
-use App\Repository\ParticipantsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,15 +31,15 @@ final class EventsController extends AbstractController
         ]);
     }
 
-    #[Route('/events/{id<\d+>}', name: 'app_events_show')]
-    public function show(Events $event, ParticipantsRepository $pr): Response
+#[Route('/events/{id<\d+>}', name: 'app_events_show')]
+    public function show(Events $event): Response
     {
         $hasJoined = null;
 
         $user = $this->getUser();
 
         if ($user) {
-            $hasJoined = $pr->existsByUserAndEvent($user, $event);
+            $hasJoined = $event->getParticipants()->contains($user);
         }
 
         return $this->render('events/show.html.twig', [
@@ -52,7 +50,7 @@ final class EventsController extends AbstractController
 
     #[IsGranted('ROLE_USER')]
     #[Route('/events/{id<\d+>}/join', name: 'app_events_join')]
-    public function join(Events $event, EntityManagerInterface $em, ParticipantsRepository $pr): Response
+    public function join(Events $event, EntityManagerInterface $em): Response
     {
         $user = $this->getUser();
         $now = new \DateTime();
@@ -63,15 +61,10 @@ final class EventsController extends AbstractController
             return $this->redirectToRoute('app_events_show', ['id' => $event->getId()]);
         }
 
-        if ($pr->existsByUserAndEvent($user, $event)) {
+        if ($event->getParticipants()->contains($user)) {
             $this->addFlash('danger', "Vous avez déjà rejoint l'évènement !");
         } else {
-            $participation = (new Participants())
-                ->setEvent($event)
-                ->setParticipant($user)
-                ->setRegistrationDatetime($now);
-
-            $em->persist($participation);
+            $event->addParticipant($user);
             $em->flush();
 
             $this->addFlash('success', "Vous avez bien rejoint l'évènement !");
@@ -82,7 +75,7 @@ final class EventsController extends AbstractController
 
     #[IsGranted('ROLE_USER')]
     #[Route('/events/{id<\d+>}/leave', name: 'app_events_leave')]
-    public function leave(Events $event, EntityManagerInterface $em, ParticipantsRepository $pr): Response
+    public function leave(Events $event, EntityManagerInterface $em): Response
     {
         $user = $this->getUser();
         $now = new \DateTime();
@@ -93,13 +86,8 @@ final class EventsController extends AbstractController
             return $this->redirectToRoute('app_events_show', ['id' => $event->getId()]);
         }
 
-        $participation = $pr->findOneBy([
-            'participant' => $user,
-            'event' => $event,
-        ]);
-
-        if ($participation) {
-            $em->remove($participation);
+        if ($event->getParticipants()->contains($user)) {
+            $event->removeParticipant($user);
             $em->flush();
 
             $this->addFlash('success', "Vous avez quitté l'évènement avec succès !");

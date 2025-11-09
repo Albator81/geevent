@@ -55,6 +55,7 @@ final class EventsFactory extends PersistentProxyObjectFactory
             'createdBy' => UserFactory::random(['isAdmin' => true]),
             'type' => self::faker()->randomElement(Type::cases()),
             'sponsors' => SponsorsFactory::randomSet(rand(3, 6)),
+            'participants' => UserFactory::randomSet(rand(2, 15)),
         ];
     }
 
@@ -69,6 +70,10 @@ final class EventsFactory extends PersistentProxyObjectFactory
                 $sponsors = $attributes['sponsors'];
                 foreach ($sponsors as $sponsor) {
                     $sponsor->addEvent($event);
+                }
+                $participants = $attributes['participants'];
+                foreach ($participants as $participant) {
+                    $participant->addEventsJoined($event);
                 }
             })
         ;

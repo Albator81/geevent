@@ -48,20 +48,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Events::class, mappedBy: 'created_by', orphanRemoval: true)]
     private Collection $events;
 
-    /**
-     * @var Collection<int, Participants>
-     */
-    #[ORM\OneToMany(targetEntity: Participants::class, mappedBy: 'participant', orphanRemoval: true)]
-    private Collection $participations;
-
     #[ORM\Column]
     private ?bool $isAdmin = null;
+
+    /**
+     * @var Collection<int, Events>
+     */
+    #[ORM\ManyToMany(targetEntity: Events::class, inversedBy: 'participants')]
+    private Collection $eventsJoined;
 
     public function __construct()
     {
         $this->annonces = new ArrayCollection();
         $this->events = new ArrayCollection();
         $this->participations = new ArrayCollection();
+        $this->eventsJoined = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -217,36 +218,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, Participants>
-     */
-    public function getParticipations(): Collection
-    {
-        return $this->participations;
-    }
-
-    public function addParticipation(Participants $participation): static
-    {
-        if (!$this->participations->contains($participation)) {
-            $this->participations->add($participation);
-            $participation->setParticipant($this);
-        }
-
-        return $this;
-    }
-
-    public function removeParticipation(Participants $participation): static
-    {
-        if ($this->participations->removeElement($participation)) {
-            // set the owning side to null (unless already changed)
-            if ($participation->getParticipant() === $this) {
-                $participation->setParticipant(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function isAdmin(): ?bool
     {
         return $this->isAdmin;
@@ -255,6 +226,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsAdmin(bool $isAdmin): static
     {
         $this->isAdmin = $isAdmin;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Events>
+     */
+    public function getEventsJoined(): Collection
+    {
+        return $this->eventsJoined;
+    }
+
+    public function addEventsJoined(Events $eventsJoined): static
+    {
+        if (!$this->eventsJoined->contains($eventsJoined)) {
+            $this->eventsJoined->add($eventsJoined);
+        }
+
+        return $this;
+    }
+
+    public function removeEventsJoined(Events $eventsJoined): static
+    {
+        $this->eventsJoined->removeElement($eventsJoined);
 
         return $this;
     }
