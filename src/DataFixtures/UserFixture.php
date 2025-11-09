@@ -13,7 +13,7 @@ class UserFixture extends Fixture
         UserFactory::createOne([
             'username' => 'JeanJean',
             'email' => 'jean@jean.fr',
-            'password' => password_hash('Jean123', PASSWORD_BCRYPT),
+            'password' => password_hash('jean', PASSWORD_BCRYPT),
             'roles' => ['ROLE_USER', 'ROLE_ADMIN'],
             'isAdmin' => true,
         ]);

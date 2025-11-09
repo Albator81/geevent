@@ -10,6 +10,6 @@ class SponsorsFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        SponsorsFactory::createMany(rand(5, 12));
+        SponsorsFactory::createMany(rand(8, 15));
     }
 }

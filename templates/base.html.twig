@@ -5,15 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}LAB-I*{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="shortcut icon" href="{{ asset('GeEvent_logo_img.png') }}" type="image/png">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     {% block stylesheets %}{% endblock %}
 </head>
 <body class="d-flex flex-column min-vh-100 bg-light">
-    <nav class="navbar navbar-expand-lg navbar-light bg-white mb-4 shadow-sm">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="/">
-                <img src="{{ asset('GeEvent_logo_img.png') }}" alt="Ge'Event logo" height="80" class="me-2">
+                <img src="{{ asset('GeEvent_logo_img.png') }}" alt="Ge'Event logo" height="70" class="me-2">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
                 <span class="navbar-toggler-icon"></span>
@@ -23,25 +23,36 @@
                     <li class="nav-item"><a href="{{ path('app_home') }}" class="nav-link text-dark">Accueil</a></li>
                     <li class="nav-item"><a href="{{ path('app_annonces') }}" class="nav-link text-dark">Annonces</a></li>
                     <li class="nav-item"><a href="{{ path('app_events') }}" class="nav-link text-dark">Events</a></li>
+                    <li class="nav-item"><a href="{{ path('app_events', {d: 'c'}) }}" class="nav-link text-dark">Carte</a></li>
                 </ul>
-                <a href="{{ path('app_login') }}" class="btn btn-outline-primary d-flex align-items-center">
-                    <span class="material-icons me-2">account_circle</span>
-                    Espace personnel
-                </a>
+                {% if app.user %}
+                        <div class="dropdown">
+                            <a href="#" class="btn btn-primary dropdown-toggle d-flex align-items-center" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-person-circle me-2"></i>
+                                Bonjour, {{ app.user.username }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="{{ path('app_profile') }}"><i class="bi bi-gear-fill me-2"></i> Mon profil</a></li>
+                                {% if is_granted('ROLE_ADMIN') %}
+                                    <li><a class="dropdown-item" href="{{ path('app_admin') }}"><i class="bi bi-shield-lock-fill me-2"></i> Administration</a></li>
+                                {% endif %}
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" href="{{ path('app_logout') }}"><i class="bi bi-box-arrow-right me-2"></i> Déconnexion</a></li>
+                            </ul>
+                        </div>
+                    {% else %}
+                        <a href="{{ path('app_login') }}" class="btn btn-outline-primary d-flex align-items-center">
+                            <i class="bi bi-person-fill me-2"></i>
+                            Connexion
+                        </a>
+                    {% endif %}
             </div>
         </div>
     </nav>
     <div class="container">
         {% for label, messages in app.flashes %}
-            {% set bootstrapClass = {
-                success: 'success',
-                error: 'danger',
-                danger: 'danger',
-                warning: 'warning',
-                info: 'info',
-            }[label]|default('secondary') %}
             {% for message in messages %}
-                <div class="alert alert-{{ bootstrapClass }} alert-dismissible fade show mt-3" role="alert">
+                <div class="alert alert-{{ label }} alert-dismissible fade show mt-3" role="alert">
                     {{ message }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
                 </div>
@@ -52,7 +63,7 @@
         {% block body %}{% endblock %}
     </main>
     <footer class="bg-dark text-white text-center py-3 mt-auto">
-        <p class="mb-0">&copy; {{ "now"|date("Y") }} - Ge'Event</p>
+        <p class="mb-0">&copy; {{ 'now'|date('Y') }} - Ge'Event</p>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     {% block javascripts %}{% endblock %}

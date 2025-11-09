@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Carte des evènements{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div id="map" class="shadow rounded" style="height:100%"></div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script>
+        const map = L.map('map').setView([49.25, 4.03333], 13);
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            minZoom: 10,
+            maxZoom: 18,
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
+
+        const meetupLayer = L.layerGroup();
+        const meetingLayer = L.layerGroup();
+
+        {% for event in events %}
+            var popupContent = `
+                <div >
+                    <strong>{{ event.title }}</strong><br>
+                    <small>{{ event.type.value }}</small><br>
+                    <small>{{ event.address }}</small><br>
+                    <small>{{ event.participations|length }} participant</small><br>
+                    <a href="{{ path('app_events_show', {id: event.id}) }}">Voir plus</a>
+                </div>
+            `;
+            
+            var marker = L.marker([{{ event.latitude }}, {{ event.longitude }}]).addTo(map)
+                .bindPopup(popupContent)
+
+            marker.on('click', function(e) {
+                map.setView(e.latlng, 15, { animate: true });
+            });
+
+            {% if event.type.name == 'MEETUP' %}
+                marker.addTo(meetupLayer);
+            {% else %}
+                marker.addTo(meetingLayer);
+            {% endif %}
+        {% endfor %}
+
+        const overlays = {
+            "Meetups": meetupLayer,
+            "Apéros": meetingLayer
+        };
+
+        L.control.layers(null, overlays, { collapsed: false }).addTo(map);
+
+        meetupLayer.addTo(map);
+        meetingLayer.addTo(map);
+    </script>
+{% endblock %}

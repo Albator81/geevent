@@ -19,10 +19,10 @@ class Sponsors
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column(type: Types::BLOB, nullable: true)]
+    #[ORM\Column(type: Types::BLOB)]
     private $logo;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255)]
     private ?string $website_url = null;
 
     /**
@@ -55,7 +55,7 @@ class Sponsors
 
     public function getLogo()
     {
-        return $this->logo;
+        return base64_encode(stream_get_contents($this->logo));
     }
 
     public function setLogo($logo): static

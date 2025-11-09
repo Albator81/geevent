@@ -4,14 +4,6 @@
 
 {% block body %}
 
-
-Bonjour {{ app.user.username }}<br>
-
-    {% if avatar %}
-        <img src="data:image/png;base64,{{ avatar }}" alt="avatar">
-    {% else %}
-        <p>Pas d'avatar</p>
-    {% endif %}
-
+Bonjour {{ app.user.username }}
 
 {% endblock %}

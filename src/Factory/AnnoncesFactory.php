@@ -37,7 +37,7 @@ final class AnnoncesFactory extends PersistentProxyObjectFactory
         return [
             'title' => self::faker()->sentence(4),
             'content' => self::faker()->paragraphs(3, true),
-            'sentBy' => UserFactory::random(["isAdmin" => true]),
+            'sentBy' => UserFactory::random(['isAdmin' => true]),
             'sentTo' => self::faker()->randomElement(Target::cases()),
             'sentAt' => self::faker()->dateTimeBetween('-1 month'),
         ];

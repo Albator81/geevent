@@ -54,6 +54,9 @@ class Events
     #[ORM\Column(enumType: Type::class)]
     private ?Type $type = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $address = null;
+
     public function __construct()
     {
         $this->sponsors = new ArrayCollection();
@@ -214,6 +217,18 @@ class Events
     public function setType(Type $type): static
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    public function getAddress(): ?string
+    {
+        return $this->address;
+    }
+
+    public function setAddress(string $address): static
+    {
+        $this->address = $address;
 
         return $this;
     }

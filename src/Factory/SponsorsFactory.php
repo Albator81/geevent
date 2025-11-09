@@ -33,11 +33,10 @@ final class SponsorsFactory extends PersistentProxyObjectFactory
     #[\Override]
     protected function defaults(): array|callable
     {
-
-        $imagesDir = __DIR__ . '/images';
+        $imagesDir = __DIR__.'/images';
         $images = array_diff(scandir($imagesDir), ['.', '..']);
         $randomImage = $images[array_rand($images)];
-        $avatarData = self::faker()->boolean(chanceOfGettingTrue: 25) ? null : file_get_contents($imagesDir . '/' . $randomImage);
+        $avatarData = file_get_contents($imagesDir.'/'.$randomImage);
 
         return [
             'name' => self::faker()->company(),

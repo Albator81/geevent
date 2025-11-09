@@ -36,18 +36,12 @@ final class UserFactory extends PersistentProxyObjectFactory
         $a = self::faker()->boolean(10);
         $roles = $a ? ['ROLE_USER', 'ROLE_ADMIN'] : ['ROLE_USER'];
 
-        $imagesDir = __DIR__ . '/images';
-        $images = array_diff(scandir($imagesDir), ['.', '..']);
-        $randomImage = $images[array_rand($images)];
-        $avatarData = self::faker()->boolean(chanceOfGettingTrue: 25) ? null : file_get_contents($imagesDir . '/' . $randomImage);
-
         return [
             'email' => self::faker()->email(),
-            'password' => password_hash('Test123', PASSWORD_BCRYPT),
+            'password' => password_hash('test', PASSWORD_BCRYPT),
             'roles' => $roles,
             'isAdmin' => $a,
             'username' => self::faker()->unique()->userName(),
-            'avatar' => $avatarData,
         ];
     }
 

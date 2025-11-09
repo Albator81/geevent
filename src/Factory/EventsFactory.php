@@ -4,6 +4,7 @@ namespace App\Factory;
 
 use App\Entity\Events;
 use App\Enum\Type;
+use Symfony\Component\HttpClient\HttpClient;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
 /**
@@ -34,19 +35,26 @@ final class EventsFactory extends PersistentProxyObjectFactory
     #[\Override]
     protected function defaults(): array|callable
     {
-        $start = self::faker()->dateTimeBetween('+1 week', '+3 months');
-        $end = (clone $start)->modify('+ '.rand(1, 8).' hours');
+        $start = self::faker()->dateTimeBetween('-2 week', '+3 months');
+        $end = (clone $start)->modify('+ '.rand(10, 128).' hours');
+
+        $lat = self::faker()->randomFloat(6, 49.20, 49.30);
+        $lon = self::faker()->randomFloat(6, 3.97, 4.08);
+
+        $client = HttpClient::create();
+        $address = $client->request('GET', "https://nominatim.openstreetmap.org/reverse?lat=$lat&lon=$lon&format=json")->toArray();
 
         return [
             'title' => self::faker()->sentence(5),
             'description' => self::faker()->paragraphs(2, true),
-            'latitude' => self::faker()->latitude(),
-            'longitude' => self::faker()->longitude(),
+            'latitude' => $lat,
+            'longitude' => $lon,
+            'address' => $address['display_name'],
             'startDatetime' => $start,
             'endDatetime' => $end,
-            'createdBy' => UserFactory::random(["isAdmin" => true]),
+            'createdBy' => UserFactory::random(['isAdmin' => true]),
             'type' => self::faker()->randomElement(Type::cases()),
-            'sponsors' => SponsorsFactory::randomRange(0, 3),
+            'sponsors' => SponsorsFactory::randomSet(rand(3, 6)),
         ];
     }
 
@@ -57,7 +65,12 @@ final class EventsFactory extends PersistentProxyObjectFactory
     protected function initialize(): static
     {
         return $this
-            // ->afterInstantiate(function(Events $events): void {})
+            ->afterPersist(function(Events $event, array $attributes): void {
+                $sponsors = $attributes['sponsors'];
+                foreach ($sponsors as $sponsor) {
+                    $sponsor->addEvent($event);
+                }
+            })
         ;
     }
 }
