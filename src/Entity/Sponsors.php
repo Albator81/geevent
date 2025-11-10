@@ -55,7 +55,7 @@ class Sponsors
 
     public function getLogo()
     {
-        return base64_encode(stream_get_contents($this->logo));
+        return $this->logo;
     }
 
     public function setLogo($logo): static

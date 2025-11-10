@@ -2,14 +2,16 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Annonces;
 use App\Entity\Events;
+use App\Entity\Sponsors;
+use App\Entity\User;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[AdminDashboard(routePath: '/admin', routeName: 'admin')]
 class DashboardController extends AbstractDashboardController
@@ -48,6 +50,9 @@ class DashboardController extends AbstractDashboardController
     public function configureMenuItems(): iterable
     {
         //yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
-        yield MenuItem::linkToCrud('The Label', 'fas fa-list', Events::class);
+        yield MenuItem::linkToCrud('Les Users', 'fas fa-list', User::class);
+        yield MenuItem::linkToCrud('Les Events', 'fas fa-list', Events::class);
+        yield MenuItem::linkToCrud('Les Sponsors', 'fas fa-list', Sponsors::class);
+        yield MenuItem::linkToCrud('Les Annonces', 'fas fa-list', Annonces::class);
     }
 }
