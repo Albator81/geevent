@@ -39,7 +39,7 @@
                     <a href="{{ path('app_events_show', {id: event.id}) }}">Voir plus</a>
                 </div>
             `;
-            
+
             var marker = L.marker([{{ event.latitude }}, {{ event.longitude }}]).addTo(map)
                 .bindPopup(popupContent)
 

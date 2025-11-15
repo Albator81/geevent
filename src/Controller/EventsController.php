@@ -31,7 +31,7 @@ final class EventsController extends AbstractController
         ]);
     }
 
-#[Route('/events/{id<\d+>}', name: 'app_events_show')]
+    #[Route('/events/{id<\d+>}', name: 'app_events_show')]
     public function show(Events $event): Response
     {
         $hasJoined = null;

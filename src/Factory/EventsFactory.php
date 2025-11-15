@@ -66,7 +66,7 @@ final class EventsFactory extends PersistentProxyObjectFactory
     protected function initialize(): static
     {
         return $this
-            ->afterPersist(function(Events $event, array $attributes): void {
+            ->afterPersist(function (Events $event, array $attributes): void {
                 $sponsors = $attributes['sponsors'];
                 foreach ($sponsors as $sponsor) {
                     $sponsor->addEvent($event);

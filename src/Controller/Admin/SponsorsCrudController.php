@@ -21,7 +21,7 @@ class SponsorsCrudController extends AbstractCrudController
         return [
             IdField::new('id'),
             TextField::new('name'),
-            //ImageField::new('logo'),
+            // ImageField::new('logo'),
             TextEditorField::new('website_url'),
         ];
     }

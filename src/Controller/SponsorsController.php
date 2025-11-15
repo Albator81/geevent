@@ -20,7 +20,6 @@ final class SponsorsController extends AbstractController
     #[Route('/sponsors/{id<\d+>}/logo', name: 'app_sponsors_logo')]
     public function getLogo(Sponsors $sponsor): Response
     {
-
         $logoData = stream_get_contents($sponsor->getLogo());
         $response = new Response($logoData);
 
@@ -28,7 +27,7 @@ final class SponsorsController extends AbstractController
         $mimeType = $finfo->buffer($logoData) ?: 'application/octet-stream';
 
         $response->headers->set('Content-Type', $mimeType);
-        
+
         return $response;
     }
 }
