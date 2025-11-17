@@ -41,8 +41,7 @@ final class EventsFactory extends PersistentProxyObjectFactory
         $lat = self::faker()->randomFloat(6, 49.20, 49.30);
         $lon = self::faker()->randomFloat(6, 3.97, 4.08);
 
-        $client = HttpClient::create();
-        $address = $client->request('GET', "https://nominatim.openstreetmap.org/reverse?lat=$lat&lon=$lon&format=json")->toArray();
+        $address = HttpClient::create()->request('GET', "https://nominatim.openstreetmap.org/reverse?lat=$lat&lon=$lon&format=json")->toArray();
 
         return [
             'title' => self::faker()->sentence(5),
