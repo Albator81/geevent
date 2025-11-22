@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -13,7 +14,10 @@ class SecurityController extends AbstractController
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
         if ($this->getUser()) {
-            return $this->redirectToRoute('app_profile');
+            if ($this->getUser()->isVerified()) {
+                return $this->redirectToRoute('app_profile');
+            }
+            return new Response("Votre adresse mail n'est pas vérifié");
         }
 
         // get the login error if there is one
@@ -22,6 +26,19 @@ class SecurityController extends AbstractController
         $lastUsername = $authenticationUtils->getLastUsername();
 
         return $this->render('security/login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
+    }
+
+    #[Route(path: '/verify/{verificationToken}', name: 'app_verify')]
+    public function verify(string $verificationToken, UserRepository $userRepository): Response
+    {
+        $user = $userRepository->findOneBy(["verificationToken" => $verificationToken]);
+
+        if (!$user) {
+            return new Response($verificationToken, 403);
+        }
+
+        $user->setVerified(true);
+        return new Response("Votre adresse mail a bien été vérifiée. Vous pouvez vous connecter");
     }
 
     #[Route(path: '/logout', name: 'app_logout')]

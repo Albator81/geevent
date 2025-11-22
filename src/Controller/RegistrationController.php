@@ -12,11 +12,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Uid\Uuid;
 
 class RegistrationController extends AbstractController
 {
     #[Route('/register', name: 'app_register')]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, Security $security, EntityManagerInterface $entityManager): Response
+    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, Security $security, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
     {
         if ($this->getUser()) {
             return $this->redirectToRoute('app_profile');
@@ -34,13 +37,22 @@ class RegistrationController extends AbstractController
             $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
 
             $user->setIsAdmin(false);
+            $user->setVerified(false);
+            $user->setVerificationToken(UUID::v4());
 
             $entityManager->persist($user);
             $entityManager->flush();
 
-            // do anything else you need here, like send an email
+            $email = (new TemplatedEmail())
+                ->from('test@test.com')
+                ->to('adam.benahmeed@gmail.com')
+                ->subject('sujet ?')
+                ->htmlTemplate('registration/email.html.twig')
+                ->context(["token" => $user->getVerificationToken(), "username" => $user->getUsername()]);
 
-            return $security->login($user, AppAuthenticator::class, 'main');
+            $mailer->send($email);
+
+            return new Response("Vreifiez vos mails");
         }
 
         return $this->render('registration/register.html.twig', [
