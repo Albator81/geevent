@@ -4,10 +4,8 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\RegistrationFormType;
-use App\Security\AppAuthenticator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -19,7 +17,7 @@ use Symfony\Component\Uid\Uuid;
 class RegistrationController extends AbstractController
 {
     #[Route('/register', name: 'app_register')]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, Security $security, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
+    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
     {
         if ($this->getUser()) {
             return $this->redirectToRoute('app_profile');
@@ -43,16 +41,19 @@ class RegistrationController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
+            $e = $user->getEmail();
+
             $email = (new TemplatedEmail())
                 ->from('test@test.com')
-                ->to('adam.benahmeed@gmail.com')
-                ->subject('sujet ?')
+                ->to($e)
+                ->subject('Vérification Email GeEvent')
                 ->htmlTemplate('registration/email.html.twig')
-                ->context(["token" => $user->getVerificationToken(), "username" => $user->getUsername()]);
+                ->context(["user" => $user]);
 
             $mailer->send($email);
-
-            return new Response("Vreifiez vos mails");
+            
+            $this->addFlash("info", "Un lien de vérification a été envoyé a l'adresse $e, veuillez cliquer sur le lien pour vérifier votre compte");
+            return $this->redirectToRoute("app_login");
         }
 
         return $this->render('registration/register.html.twig', [

@@ -14,10 +14,7 @@ class SecurityController extends AbstractController
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
         if ($this->getUser()) {
-            if ($this->getUser()->isVerified()) {
-                return $this->redirectToRoute('app_profile');
-            }
-            return new Response("Votre adresse mail n'est pas vérifié");
+            return $this->redirectToRoute('app_profile');
         }
 
         // get the login error if there is one
@@ -34,11 +31,13 @@ class SecurityController extends AbstractController
         $user = $userRepository->findOneBy(["verificationToken" => $verificationToken]);
 
         if (!$user) {
-            return new Response($verificationToken, 403);
+            return new Response("Token invalide", 403);
         }
 
         $user->setVerified(true);
-        return new Response("Votre adresse mail a bien été vérifiée. Vous pouvez vous connecter");
+
+        $this->addFlash("success", "Votre adresse adresse mail est vérifiée, vous pouvez vous connecter");
+        return $this->redirectToRoute("app_login");
     }
 
     #[Route(path: '/logout', name: 'app_logout')]
