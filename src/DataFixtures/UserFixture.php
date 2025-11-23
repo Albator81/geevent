@@ -14,7 +14,7 @@ class UserFixture extends Fixture
             'username' => 'JeanJean',
             'email' => 'jean@jean.fr',
             'password' => password_hash('jean', PASSWORD_BCRYPT),
-            'roles' => ['ROLE_USER', 'ROLE_ADMIN'],
+            'roles' => ['ROLE_ADMIN'],
             'isAdmin' => true,
         ]);
 
