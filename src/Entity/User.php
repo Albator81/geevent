@@ -59,6 +59,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Events::class, inversedBy: 'participants')]
     private Collection $eventsJoined;
 
+    #[ORM\Column(length: 255)]
+    private ?string $verificationToken = null;
+
+    #[ORM\Column]
+    private ?bool $verified = null;
+
     public function __construct()
     {
         $this->annonces = new ArrayCollection();
@@ -252,6 +258,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeEventsJoined(Events $eventsJoined): static
     {
         $this->eventsJoined->removeElement($eventsJoined);
+
+        return $this;
+    }
+
+    public function getVerificationToken(): ?string
+    {
+        return $this->verificationToken;
+    }
+
+    public function setVerificationToken(string $verificationToken): static
+    {
+        $this->verificationToken = $verificationToken;
+
+        return $this;
+    }
+
+    public function isVerified(): ?bool
+    {
+        return $this->verified;
+    }
+
+    public function setVerified(bool $verified): static
+    {
+        $this->verified = $verified;
 
         return $this;
     }

@@ -4,19 +4,20 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\RegistrationFormType;
-use App\Security\AppAuthenticator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Uid\Uuid;
 
 class RegistrationController extends AbstractController
 {
     #[Route('/register', name: 'app_register')]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, Security $security, EntityManagerInterface $entityManager): Response
+    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
     {
         if ($this->getUser()) {
             return $this->redirectToRoute('app_profile');
@@ -34,13 +35,25 @@ class RegistrationController extends AbstractController
             $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
 
             $user->setIsAdmin(false);
+            $user->setVerified(false);
+            $user->setVerificationToken(UUID::v4());
 
             $entityManager->persist($user);
             $entityManager->flush();
 
-            // do anything else you need here, like send an email
+            $e = $user->getEmail();
 
-            return $security->login($user, AppAuthenticator::class, 'main');
+            $email = (new TemplatedEmail())
+                ->from('test@test.com')
+                ->to($e)
+                ->subject('Vérification Email GeEvent')
+                ->htmlTemplate('registration/email.html.twig')
+                ->context(["user" => $user]);
+
+            $mailer->send($email);
+            
+            $this->addFlash("info", "Un lien de vérification a été envoyé a l'adresse $e, veuillez cliquer sur le lien pour vérifier votre compte");
+            return $this->redirectToRoute("app_login");
         }
 
         return $this->render('registration/register.html.twig', [
