@@ -3,10 +3,12 @@
 namespace App\Controller;
 
 use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use App\Entity\User;
 
 class SecurityController extends AbstractController
 {
@@ -26,7 +28,7 @@ class SecurityController extends AbstractController
     }
 
     #[Route(path: '/verify/{verificationToken}', name: 'app_verify')]
-    public function verify(string $verificationToken, UserRepository $userRepository): Response
+    public function verify(string $verificationToken, UserRepository $userRepository, EntityManagerInterface $em): Response
     {
         $user = $userRepository->findOneBy(["verificationToken" => $verificationToken]);
 
@@ -36,7 +38,10 @@ class SecurityController extends AbstractController
 
         $user->setVerified(true);
 
-        $this->addFlash("success", "Votre adresse adresse mail est vérifiée, vous pouvez vous connecter");
+        $em->persist($user);
+        $em->flush();
+
+        $this->addFlash("success", "Votre adresse adresse mail est vérifiée, vous pouvez vous connecter ");
         return $this->redirectToRoute("app_login");
     }
 

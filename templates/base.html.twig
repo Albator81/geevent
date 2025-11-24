@@ -60,7 +60,7 @@
         {% if app.user %}
             {% if not app.user.verified %}
                 <div class="alert alert-warning alert-dismissible fade show mt-3" role="alert">
-                    Veuillez vérfifier votre e-mail en cliquant sur le lien qui vous a été envoyé par mail
+                    Veuillez vérfifier votre e-mail en cliquant sur le lien qui vous a été envoyé dans {{app.user.email}}
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             {% endif %}
