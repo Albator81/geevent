@@ -41,7 +41,7 @@ class SecurityController extends AbstractController
         $em->persist($user);
         $em->flush();
 
-        $this->addFlash("success", "Votre adresse adresse mail est vérifiée, vous pouvez vous connecter ");
+        $this->addFlash("success", "Votre adresse adresse mail est vérifiée");
         return $this->redirectToRoute("app_login");
     }
 
