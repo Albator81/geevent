@@ -61,6 +61,12 @@ final class EventsController extends AbstractController
             return $this->redirectToRoute('app_events_show', ['id' => $event->getId()]);
         }
 
+        if (!$user->isVerified()) {
+            $this->addFlash('danger', "Impossible de rejoindre : Votre email n'est pas vérifié");
+
+            return $this->redirectToRoute('app_events_show', ['id' => $event->getId()]);
+        }
+
         if ($event->getParticipants()->contains($user)) {
             $this->addFlash('danger', "Vous avez déjà rejoint l'évènement !");
         } else {
