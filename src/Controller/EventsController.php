@@ -16,7 +16,7 @@ final class EventsController extends AbstractController
     #[Route('/events', name: 'app_events')]
     public function index(EventsRepository $eventsRepository, Request $request): Response
     {
-        $events = $eventsRepository->findBy([], ['start_datetime' => 'DESC']);
+        $events = $eventsRepository->betterFindAll();
 
         $display = $request->query->get('d');
 
