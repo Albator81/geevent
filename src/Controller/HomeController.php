@@ -15,4 +15,10 @@ final class HomeController extends AbstractController
             'controller_name' => 'HomeController',
         ]);
     }
+
+    #[Route('/cgu', name: 'app_home')]
+    public function cgu(): Response
+    {
+        return $this->render('home/cgu.html.twig',);
+    }
 }
