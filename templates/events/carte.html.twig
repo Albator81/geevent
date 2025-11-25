@@ -35,7 +35,7 @@
                     <strong>{{ event.title }}</strong><br>
                     <small>{{ event.type.value }}</small><br>
                     <small>{{ event.address }}</small><br>
-                    <small>{{ event.participants|length }} participants</small><br>
+                    <small>{{ event.participants_count }} participants</small><br>
                     <a href="{{ path('app_events_show', {id: event.id}) }}">Voir plus</a>
                 </div>
             `;

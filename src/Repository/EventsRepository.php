@@ -26,6 +26,8 @@ class EventsRepository extends ServiceEntityRepository
                 'e.description',
                 'e.start_datetime',
                 'e.end_datetime',
+                'e.longitude',
+                'e.latitude',
                 'e.type',
                 'e.address',
                 'c.username as creator_username',
