@@ -16,6 +16,32 @@ class EventsRepository extends ServiceEntityRepository
         parent::__construct($registry, Events::class);
     }
 
+    public function betterFindAll(): array
+    {
+        $qb = $this->createQueryBuilder('e');
+
+        return $qb->select([
+                'e.id',
+                'e.title',
+                'e.description',
+                'e.start_datetime',
+                'e.end_datetime',
+                'e.type',
+                'e.address',
+                'c.username as creator_username',
+                'COUNT(DISTINCT s.id) as sponsors_count',
+                'COUNT(DISTINCT p.id) as participants_count'
+            ])
+            ->join('e.created_by', 'c')
+            ->leftJoin('e.sponsors', 's')
+            ->leftJoin('e.participants', 'p')
+            ->groupBy('e.id')
+            ->addGroupBy('c.username')
+            ->orderBy('e.end_datetime', 'DESC')
+            ->getQuery()
+            ->getArrayResult();
+    }
+
     //    /**
     //     * @return Events[] Returns an array of Events objects
     //     */
