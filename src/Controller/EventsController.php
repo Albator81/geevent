@@ -6,27 +6,25 @@ use App\Entity\Events;
 use App\Repository\EventsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 
 final class EventsController extends AbstractController
 {
     #[Route('/events', name: 'app_events')]
-    public function index(EventsRepository $eventsRepository, Request $request): Response
-    {
-        $display = $request->query->get('d');
-        $search = $request->query->get('search') ?? "";
-
+    public function index(EventsRepository $eventsRepository, #[MapQueryParameter] string $display = "", #[MapQueryParameter] string $search = ""): Response {
+        
         $events = $eventsRepository->betterFindAll($search);
 
-        if ('c' == $display) {
+        if ('c' === $display) {
             return $this->render('events/carte.html.twig', [
                 'events' => $events,
+                'search' => $search
             ]);
         }
-
+        //dd($search);
         return $this->render('events/index.html.twig', [
             'events' => $events,
             'search' => $search
