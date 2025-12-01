@@ -16,11 +16,11 @@ class EventsRepository extends ServiceEntityRepository
         parent::__construct($registry, Events::class);
     }
 
-    public function betterFindAll(): array
+    public function betterFindAll(string $search): array
     {
         $qb = $this->createQueryBuilder('e');
 
-        return $qb->select([
+        $qb->select([
                 'e.id',
                 'e.title',
                 'e.description',
@@ -38,8 +38,15 @@ class EventsRepository extends ServiceEntityRepository
             ->leftJoin('e.sponsors', 's')
             ->leftJoin('e.participants', 'p')
             ->groupBy('e.id')
-            ->addGroupBy('c.username')
-            ->orderBy('e.end_datetime', 'DESC')
+            ->addGroupBy('c.username');
+
+            if ($search != "") {
+                $qb->where('e.title LIKE :search')
+                    ->orWhere('e.description LIKE :search')
+                    ->setParameter('search', '%' . $search . '%');
+            }
+
+        return $qb->orderBy('e.end_datetime', 'DESC')
             ->getQuery()
             ->getArrayResult();
     }

@@ -16,9 +16,10 @@ final class EventsController extends AbstractController
     #[Route('/events', name: 'app_events')]
     public function index(EventsRepository $eventsRepository, Request $request): Response
     {
-        $events = $eventsRepository->betterFindAll();
-
         $display = $request->query->get('d');
+        $search = $request->query->get('s') ?? "";
+
+        $events = $eventsRepository->betterFindAll($search);
 
         if ('c' == $display) {
             return $this->render('events/carte.html.twig', [
