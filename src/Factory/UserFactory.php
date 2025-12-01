@@ -42,7 +42,7 @@ final class UserFactory extends PersistentProxyObjectFactory
             'roles' => $roles,
             'isAdmin' => $a,
             'verified' => false,
-            'verificationToken' => "yes",
+            'verificationToken' => 'yes',
             'username' => self::faker()->unique()->userName(),
         ];
     }

@@ -21,30 +21,30 @@ class EventsRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('e');
 
         $qb->select([
-                'e.id',
-                'e.title',
-                'e.description',
-                'e.start_datetime',
-                'e.end_datetime',
-                'e.longitude',
-                'e.latitude',
-                'e.type',
-                'e.address',
-                'c.username as creator_username',
-                'COUNT(DISTINCT s.id) as sponsors_count',
-                'COUNT(DISTINCT p.id) as participants_count'
-            ])
+            'e.id',
+            'e.title',
+            'e.description',
+            'e.start_datetime',
+            'e.end_datetime',
+            'e.longitude',
+            'e.latitude',
+            'e.type',
+            'e.address',
+            'c.username as creator_username',
+            'COUNT(DISTINCT s.id) as sponsors_count',
+            'COUNT(DISTINCT p.id) as participants_count',
+        ])
             ->join('e.created_by', 'c')
             ->leftJoin('e.sponsors', 's')
             ->leftJoin('e.participants', 'p')
             ->groupBy('e.id')
             ->addGroupBy('c.username');
 
-            if ($search != "") {
-                $qb->where('e.title LIKE :search')
-                    ->orWhere('e.description LIKE :search')
-                    ->setParameter('search', '%' . $search . '%');
-            }
+        if ('' != $search) {
+            $qb->where('e.title LIKE :search')
+                ->orWhere('e.description LIKE :search')
+                ->setParameter('search', '%'.$search.'%');
+        }
 
         return $qb->orderBy('e.end_datetime', 'DESC')
             ->getQuery()
