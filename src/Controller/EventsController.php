@@ -17,7 +17,7 @@ final class EventsController extends AbstractController
     public function index(EventsRepository $eventsRepository, Request $request): Response
     {
         $display = $request->query->get('d');
-        $search = $request->query->get('s') ?? "";
+        $search = $request->query->get('search') ?? "";
 
         $events = $eventsRepository->betterFindAll($search);
 
@@ -29,6 +29,7 @@ final class EventsController extends AbstractController
 
         return $this->render('events/index.html.twig', [
             'events' => $events,
+            'search' => $search
         ]);
     }
 
