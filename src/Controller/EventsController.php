@@ -49,6 +49,20 @@ final class EventsController extends AbstractController
         ]);
     }
 
+    #[Route('/events/{id<\d+>}/cover', name: 'app_events_cover')]
+    public function getCover(Events $event): Response
+    {
+        $coverData = stream_get_contents($event->getCover());
+        $response = new Response($coverData);
+
+        $finfo = new \finfo(FILEINFO_MIME_TYPE);
+        $mimeType = $finfo->buffer($coverData) ?: 'application/octet-stream';
+
+        $response->headers->set('Content-Type', $mimeType);
+
+        return $response;
+    }
+
     #[IsGranted('ROLE_USER')]
     #[Route('/events/{id<\d+>}/join', name: 'app_events_join')]
     public function join(Events $event, EntityManagerInterface $em): Response

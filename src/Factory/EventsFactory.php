@@ -38,6 +38,7 @@ final class EventsFactory extends PersistentProxyObjectFactory
         $start = self::faker()->dateTimeBetween('-2 week', '+3 months');
         $end = (clone $start)->modify('+ '.rand(10, 128).' hours');
 
+        // Coordonées dans Reims et ses alentours
         $lat = self::faker()->randomFloat(6, 49.20, 49.30);
         $lon = self::faker()->randomFloat(6, 3.97, 4.08);
 

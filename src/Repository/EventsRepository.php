@@ -30,6 +30,7 @@ class EventsRepository extends ServiceEntityRepository
             'e.latitude',
             'e.type',
             'e.address',
+            'e.cover',
             'c.username as creator_username',
             'COUNT(DISTINCT s.id) as sponsors_count',
             'COUNT(DISTINCT p.id) as participants_count',
