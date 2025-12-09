@@ -16,7 +16,7 @@ class EventsRepository extends ServiceEntityRepository
         parent::__construct($registry, Events::class);
     }
 
-    public function betterFindAll(string $search): array
+    public function betterFindAll(string $search, int $start = null, int $end = null): array
     {
         $qb = $this->createQueryBuilder('e');
 
@@ -45,6 +45,11 @@ class EventsRepository extends ServiceEntityRepository
             $qb->where('e.title LIKE :search')
                 ->orWhere('e.description LIKE :search')
                 ->setParameter('search', '%'.$search.'%');
+        }
+
+        if ($start !== null && $end !== null) {
+            $qb->setFirstResult($start);
+            $qb->setMaxResults($end - $start);
         }
 
         return $qb->orderBy('e.end_datetime', 'DESC')
