@@ -1,37 +1,23 @@
 const zoneRecherche = document.getElementById("search");
 const resultatsRecharche = document.getElementById("results");
 
-zoneRecherche.addEventListener("keyup", () => {
-    const query = zoneRecherche.value.trim();
+zoneRecherche.onkeydown = () => {
     resultatsRecharche.innerHTML = "";
 
-    if (query.length < 2) {
-        resultatsRecharche.classList.remove("show");
-        return;
-    }
-
-    fetch(`/events/search?search=${encodeURIComponent(query)}`)
-        .then(response => {
-            if (!response.ok) console.error("Erreur :", response.status);
-            return response.json();
-        })
-        .then(data => {
-            if (data.length === 0) {
-                resultatsRecharche.classList.remove("show");
-                return;
+    fetch(`/events/search?search=${encodeURIComponent(zoneRecherche.value)}`)
+        .then((response) => {
+            if (!response.ok) {
+                console.error("erreur, c'est pas ok : ", response.status);
             }
-
-            data.forEach(element => {
-                resultatsRecharche.innerHTML += `
-                    <a class="dropdown-item" href="/events/${element["id"]}">
-                        ${element["title"]}
-                    </a>
-                `;
-            });
-
-            resultatsRecharche.classList.add("show");
+            return response.json(); 
         })
-        .catch(error => {
-            console.error("Erreur fetch :", error);
+        .then((data) => {
+            //console.log(data);
+            data.forEach(element => {
+                resultatsRecharche.innerHTML += `<a class="search-result-item" href="/events/${element["id"]}">${element["title"]}</a><br>`;
+            });
+        })
+        .catch((error) => {
+            console.error("Oh non, une erreure : ", error);
         });
-});
+};
