@@ -57,6 +57,9 @@ class Events
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'eventsJoined')]
     private Collection $participants;
 
+    #[ORM\Column(type: Types::BLOB, nullable: true)]
+    private $cover = null;
+
     public function __construct()
     {
         $this->sponsors = new ArrayCollection();
@@ -227,6 +230,18 @@ class Events
         if ($this->participants->removeElement($participant)) {
             $participant->removeEventsJoined($this);
         }
+
+        return $this;
+    }
+
+    public function getCover()
+    {
+        return $this->cover;
+    }
+
+    public function setCover($cover): static
+    {
+        $this->cover = $cover;
 
         return $this;
     }
