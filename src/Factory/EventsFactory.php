@@ -43,6 +43,8 @@ final class EventsFactory extends PersistentProxyObjectFactory
 
         $address = HttpClient::create()->request('GET', "https://nominatim.openstreetmap.org/reverse?lat=$lat&lon=$lon&format=json")->toArray();
 
+        $cover = self::faker()->boolean(75) ? HttpClient::create()->request('GET', "https://picsum.photos/1920/1080")->getContent() : null;
+
         return [
             'title' => self::faker()->sentence(5),
             'description' => self::faker()->paragraphs(2, true),
@@ -55,6 +57,7 @@ final class EventsFactory extends PersistentProxyObjectFactory
             'type' => self::faker()->randomElement(Type::cases()),
             'sponsors' => SponsorsFactory::randomSet(rand(3, 6)),
             'participants' => UserFactory::randomSet(rand(2, 15)),
+            'cover' => $cover,
         ];
     }
 
