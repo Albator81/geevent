@@ -36,7 +36,32 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await response.json();
             
             if (data && data.length > 0) {
-                const htmlContent = data.map(element => `<a class="dropdown-item" href="/events/${element.id}">${element.title}</a>`).join('');
+                const htmlContent = data.map(element => {
+                    
+                    const eventId = element.id;
+                    const title = element.title;
+                    const type = element.type;
+                    
+                    const dateObj = new Date(element.start_datetime.date);
+                    formattedDate = dateObj.toLocaleDateString('fr-FR', { 
+                        weekday: 'short', 
+                        day: '2-digit', 
+                        month: '2-digit', 
+                        hour: '2-digit', 
+                        minute: '2-digit' 
+                    });
+
+                    return `
+                        <a class="dropdown-item py-3 px-3 text-wrap" href="/events/${eventId}">
+                            <div class="fw-medium mb-2">${title}</div>
+                            <div class="d-flex justify-content-between align-items-center small text-muted">
+                            <span class="badge bg-secondary-subtle text-secondary rounded-pill px-2">
+                                <i class="bi bi-tag-fill"></i> ${type}
+                            </span>
+                            <span><i class="bi bi-clock-fill me-1"></i>${formattedDate}</span>
+                            </div>
+                        </a>`;
+                }).join('');
                 
                 toggleResults(true, htmlContent);
             } else {
