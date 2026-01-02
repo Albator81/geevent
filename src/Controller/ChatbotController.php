@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\AnnoncesRepository;
 use App\Repository\EventsRepository;
 use App\Repository\SponsorsRepository;
 use App\Service\MistralApiService;
@@ -24,7 +25,8 @@ class ChatbotController extends AbstractController
         Request $request,
         MistralApiService $mistralApiService,
         EventsRepository $eventsRepository,
-        SponsorsRepository $sponsorsRepository
+        SponsorsRepository $sponsorsRepository,
+        AnnoncesRepository $annoncesRepository
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
         $userMessage = $data['message'] ?? null;
@@ -42,6 +44,7 @@ class ChatbotController extends AbstractController
             ->getQuery()
             ->getResult();
 
+        $recentAnnonces = $annoncesRepository->findBy([], ['sent_at' => 'DESC'], 3);
         $sponsors = $sponsorsRepository->findAll();
 
         $context = "Date actuelle : " . (new \DateTime())->format('d/m/Y H:i') . "\n\n";
@@ -51,6 +54,11 @@ class ChatbotController extends AbstractController
             $context .= "- " . $event->getTitle() . " (" . $event->getType()->name . ") : " .
                 $event->getDescription() . ". Le " . $event->getStartDatetime()->format('d/m/Y à H:i') .
                 " à " . $event->getAddress() . ".\n";
+        }
+
+        $context .= "\nDernières annonces de l'association :\n";
+        foreach ($recentAnnonces as $annonce) {
+            $context .= "- [" . $annonce->getSentAt()->format('d/m/Y') . "] " . $annonce->getTitle() . " : " . $annonce->getContent() . "\n";
         }
 
         $context .= "\nSponsors de l'association :\n";
