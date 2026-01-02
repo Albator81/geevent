@@ -18,13 +18,17 @@ class MistralApiService
         $this->apiKey = $apiKey;
     }
 
-    public function getResponse(string $userMessage): string
+    public function getResponse(string $userMessage, string $context = ''): string
     {
         $systemPrompt = "Tu es l'assistant virtuel de l'association Sacrée Tech et de la plateforme Ge'Event. " .
             "Ta mission est d'aider les utilisateurs concernant les événements (Meetups, Apéros) et la vie de l'association à Reims. " .
             "Tu ne dois JAMAIS parler de politique, de religion, ou de sujets controversés. " .
             "Si une question sort de ton domaine d'expertise (l'association, la tech à Reims, l'application Ge'Event), tu as l'interdiction formelle d'y répondre et tu dois poliment recadrer la conversation sur Ge'Event. " .
             "Sois concis, serviable et toujours poli. Réponds en français.";
+
+        if (!empty($context)) {
+            $systemPrompt .= "\n\nVoici les informations contextuelles actuelles (événements, sponsors) que tu dois utiliser pour répondre :\n" . $context;
+        }
 
         $response = $this->client->request('POST', 'https://api.mistral.ai/v1/chat/completions', [
             'headers' => [
