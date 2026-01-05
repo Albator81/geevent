@@ -13,7 +13,6 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 class UserCrudController extends AbstractCrudController
 {
@@ -31,6 +30,14 @@ class UserCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
+        $isOwnProfile = false;
+        if ($pageName === Crud::PAGE_EDIT) {
+            $entity = $this->getContext()->getEntity()->getInstance();
+            $currentUser = $this->getUser();
+            if ($currentUser instanceof User && $entity->getId() === $currentUser->getId()) {
+                $isOwnProfile = true;
+            }
+        }
         return [
             IdField::new('id')
                 ->onlyOnIndex(),
@@ -41,7 +48,8 @@ class UserCrudController extends AbstractCrudController
                 ->setFormTypeOption('mapped', false)
                 ->setRequired($pageName === Crud::PAGE_NEW),
             BooleanField::new('isAdmin')
-                ->renderAsSwitch(false),
+                ->renderAsSwitch(false)
+                ->setDisabled($isOwnProfile),
             TextField::new('email'),
             BooleanField::new('verified')
                 ->renderAsSwitch(false),
@@ -65,8 +73,6 @@ class UserCrudController extends AbstractCrudController
     {
         $user = new User();
         $user->setVerificationToken(Uuid::v4());
-        $user->setIsAdmin(false);
-        $user->setVerified(false);
         return $user;
     }
 
@@ -90,8 +96,7 @@ class UserCrudController extends AbstractCrudController
     public function deleteEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
         $currentUser = $this->getUser();
-        // cette erreur, n'est pas grave, le code fonctionne sans problème avec
-        if ($currentUser && $currentUser->getId() === $entityInstance->getId()) {
+        if ($currentUser instanceof User && $currentUser->getId() === $entityInstance->getId()) {
             throw new AccessDeniedException('Vous ne pouvez pas supprimer votre propre compte administrateur.');
         }
 
