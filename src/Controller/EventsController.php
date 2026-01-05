@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Entity\User;
 
 final class EventsController extends AbstractController
 {
@@ -127,8 +128,7 @@ final class EventsController extends AbstractController
             return $this->redirectToRoute('app_events_show', ['id' => $event->getId()]);
         }
 
-        // Sécurité : Vérifie si l'utilisateur a confirmé son compte
-        if (!$user->isVerified()) {
+        if ($user instanceof User && !$user->isVerified()) {
             $this->addFlash('danger', "Impossible de rejoindre : Votre email n'est pas vérifié");
             return $this->redirectToRoute('app_events_show', ['id' => $event->getId()]);
         }
