@@ -1,9 +1,75 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello UserController!{% endblock %}
+{% block title %}Mon Profil - {{ user.username }}{% endblock %}
 
 {% block body %}
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card shadow-sm">
+                    <div class="card-body text-center">
+                        <img src="https://ui-avatars.com/api/?name={{ user.username }}&background=random&size=128"
+                             class="rounded-circle mb-3" alt="Avatar">
 
-Bonjour {{ app.user.username }}
+                        <h4>{{ user.username }}</h4>
+                        <p class="text-muted">{{ user.email }}</p>
 
+                        <div class="d-grid gap-2">
+                            {% if user.verified %}
+                                <button class="btn btn-success btn-sm" disabled>Compte Vérifié ✓</button>
+                            {% else %}
+                                <button class="btn btn-warning btn-sm" disabled>Non Vérifié </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <h3 class="mb-3">Événements à venir</h3>
+                {% if futureEvents is empty %}
+                    <p class="text-muted">Vous n'êtes inscrit à aucun événement futur.</p>
+                {% else %}
+                    <div class="list-group mb-4">
+                        {% for event in futureEvents %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5 class="mb-1">{{ event.title }}</h5>
+                                    <small class="text-muted">Le {{ event.startDatetime|date('d/m/Y à H:i') }}</small>
+                                </div>
+
+                                <a href="{{ path('app_events_leave', {id: event.id}) }}"
+                                   class="btn btn-outline-danger btn-sm text-nowrap flex-shrink-0"
+                                   style="min-width: 120px;"
+                                   onclick="return confirm('Voulez-vous vraiment vous désinscrire ?')">
+                                    Se désinscrire
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <h3 class="mb-3 mt-5">Historique</h3>
+                {% if pastEvents is empty %}
+                    <p class="text-muted">Aucun historique disponible.</p>
+                {% else %}
+                    <ul class="list-group list-group-flush">
+                        {% for event in pastEvents %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+
+                                <div class="text-muted">
+                                    <strong>{{ event.title }}</strong>
+                                    <br>
+                                    <small>Terminé le {{ event.startDatetime|date('d/m/Y') }}</small>
+                                </div>
+
+                                <a href="{{ path('app_events_show', {id: event.id}) }}"
+                                   class="btn btn-secondary btn-sm">
+                                    Voir l'événement
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+    </div>
 {% endblock %}
