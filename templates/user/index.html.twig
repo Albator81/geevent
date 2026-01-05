@@ -38,8 +38,9 @@
                                     <small class="text-muted">Le {{ event.startDatetime|date('d/m/Y à H:i') }}</small>
                                 </div>
 
-                                <a href="{{ path('app_user_unsubscribe', {id: event.id}) }}"
-                                   class="btn btn-outline-danger btn-sm text-nowrap flex-shrink-0"                                   style="min-width: 120px;"
+                                <a href="{{ path('app_events_leave', {id: event.id}) }}"
+                                   class="btn btn-outline-danger btn-sm text-nowrap flex-shrink-0"
+                                   style="min-width: 120px;"
                                    onclick="return confirm('Voulez-vous vraiment vous désinscrire ?')">
                                     Se désinscrire
                                 </a>
@@ -50,17 +51,25 @@
 
                 <h3 class="mb-3 mt-5">Historique</h3>
                 {% if pastEvents is empty %}
-                    <p class="text-muted">Vous n'avez participé à aucun événement</p>
+                    <p class="text-muted">Aucun historique disponible.</p>
                 {% else %}
-                <ul class="list-group list-group-flush">
-                    {% for event in pastEvents %}
-                        <li class="list-group-item text-muted">
-                            {{ event.title }} - <small>{{ event.startDatetime|date('d/m/Y') }}</small>
-                        </li>
-                    {% endfor %}
-                </ul>
-            </div>
-        </div>
-        {% endif %}
+                    <ul class="list-group list-group-flush">
+                        {% for event in pastEvents %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+
+                                <div class="text-muted">
+                                    <strong>{{ event.title }}</strong>
+                                    <br>
+                                    <small>Terminé le {{ event.startDatetime|date('d/m/Y') }}</small>
+                                </div>
+
+                                <a href="{{ path('app_events_show', {id: event.id}) }}"
+                                   class="btn btn-secondary btn-sm">
+                                    Voir l'événement
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
     </div>
 {% endblock %}
