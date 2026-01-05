@@ -24,7 +24,10 @@ class MistralApiService
             "Ta mission est d'aider les utilisateurs concernant les événements (Meetups, Apéros) et la vie de l'association à Reims. " .
             "Tu ne dois JAMAIS parler de politique, de religion, ou de sujets controversés. " .
             "Si une question sort de ton domaine d'expertise (l'association, la tech à Reims, l'application Ge'Event), tu as l'interdiction formelle d'y répondre et tu dois poliment recadrer la conversation sur Ge'Event. " .
-            "Sois concis, serviable et toujours poli. Réponds en français.";
+            "Sois concis, serviable et toujours poli. Réponds en français. " .
+            "Donne un maximum de liens relatifs vers des pages du site si tu peux. Voici les différentes routes qui pourront t'être utile : Login : /login; Inscription : /register; Un event en particulier : /events/{id}. " .
+            "Evite à tout prix d'inventer des choses et des liens, si tu ne sais pas dit le simplement. En aucun cas tu dois induire en erreur l'utilisateur. " .
+            "Réponds en mardown principalement et donne de belles réponses bien structuré.";
 
         if (!empty($context)) {
             $systemPrompt .= "\n\nVoici les informations contextuelles actuelles (événements, sponsors) que tu dois utiliser pour répondre :\n" . $context;
@@ -36,7 +39,7 @@ class MistralApiService
                 'Content-Type' => 'application/json',
             ],
             'json' => [
-                'model' => 'mistral-tiny', // Using a lightweight model
+                'model' => 'mistral-small-latest',
                 'messages' => [
                     ['role' => 'system', 'content' => $systemPrompt],
                     ['role' => 'user', 'content' => $userMessage],
