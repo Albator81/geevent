@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Component\Serializer\SerializerInterface;
+use App\Entity\User;
 
 final class EventsController extends AbstractController
 {
@@ -34,31 +34,31 @@ final class EventsController extends AbstractController
         ]);
     }
 
-#[Route('/events/search', name: 'app_events_search')]
-public function search(EventsRepository $eventsRepository, #[MapQueryParameter] string $search = ''): Response {
+    #[Route('/events/search', name: 'app_events_search')]
+    public function search(EventsRepository $eventsRepository, #[MapQueryParameter] string $search = ''): Response {
 
-    $events = $eventsRepository->betterFindAll($search, 0, 4);
+        $events = $eventsRepository->betterFindAll($search, 0, 4);
 
-    // c moche
-    $data = array_map(function (array $event): array {
-        return [
-            'id' => (int) $event['id'],
-            'title' => $event['title'],
-            'description' => $event['description'],
-            'start_datetime' => $event['start_datetime'],
-            'end_datetime' => $event['end_datetime'],
-            'longitude' => (float) $event['longitude'],
-            'latitude' => (float) $event['latitude'],
-            'type' => $event['type'],
-            'address' => $event['address'],
-            'creator_username' => $event['creator_username'],
-            'sponsors_count' => (int) $event['sponsors_count'],
-            'participants_count'=> (int) $event['participants_count'],
-        ];
-    }, $events);
+        // c moche
+        $data = array_map(function (array $event): array {
+            return [
+                'id' => (int) $event['id'],
+                'title' => $event['title'],
+                'description' => $event['description'],
+                'start_datetime' => $event['start_datetime'],
+                'end_datetime' => $event['end_datetime'],
+                'longitude' => (float) $event['longitude'],
+                'latitude' => (float) $event['latitude'],
+                'type' => $event['type'],
+                'address' => $event['address'],
+                'creator_username' => $event['creator_username'],
+                'sponsors_count' => (int) $event['sponsors_count'],
+                'participants_count'=> (int) $event['participants_count'],
+            ];
+        }, $events);
 
-    return new JsonResponse($data);
-}
+        return new JsonResponse($data);
+    }
 
     #[Route('/events/{id<\d+>}', name: 'app_events_show')]
     public function show(Events $event): Response
@@ -104,7 +104,7 @@ public function search(EventsRepository $eventsRepository, #[MapQueryParameter] 
             return $this->redirectToRoute('app_events_show', ['id' => $event->getId()]);
         }
 
-        if (!$user->isVerified()) {
+        if ($user instanceof User && !$user->isVerified()) {
             $this->addFlash('danger', "Impossible de rejoindre : Votre email n'est pas vérifié");
 
             return $this->redirectToRoute('app_events_show', ['id' => $event->getId()]);
