@@ -32,6 +32,7 @@
 {% endblock %}
 
 {% block javascripts %}
+<script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const chatForm = document.getElementById('chat-form');
@@ -55,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             messageDiv.classList.add('justify-content-start');
             contentDiv.classList.add('bg-white', 'border');
-            contentDiv.innerHTML = text.replace(/\n/g, '<br>'); 
+            contentDiv.innerHTML = marked.parse(text); 
         }
 
         messageDiv.appendChild(contentDiv);
