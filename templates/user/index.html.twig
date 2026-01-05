@@ -1,9 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello UserController!{% endblock %}
+{% block title %}Mon Profil{% endblock %}
 
 {% block body %}
-
-Bonjour {{ app.user.username }}
-
+    <div class="container mt-4">
+        <h1>Bienvenue sur votre profil</h1>
+        <p>Utilisateur connecté = {{ user.email }}</p>
+    </div>
 {% endblock %}
