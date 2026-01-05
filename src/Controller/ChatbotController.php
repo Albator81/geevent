@@ -35,29 +35,23 @@ class ChatbotController extends AbstractController
             return new JsonResponse(['error' => 'Message is empty'], 400);
         }
 
-        // Fetch context data
-        $upcomingEvents = $eventsRepository->createQueryBuilder('e')
-            ->where('e.start_datetime >= :now')
-            ->setParameter('now', new \DateTime())
-            ->orderBy('e.start_datetime', 'ASC')
-            ->setMaxResults(5)
-            ->getQuery()
-            ->getResult();
+        $events = $eventsRepository->betterFindAll('');
 
-        $recentAnnonces = $annoncesRepository->findBy([], ['sent_at' => 'DESC'], 3);
+        $annonces = $annoncesRepository->findAll();
         $sponsors = $sponsorsRepository->findAll();
 
         $context = "Date actuelle : " . (new \DateTime())->format('d/m/Y H:i') . "\n\n";
 
         $context .= "Prochains événements :\n";
-        foreach ($upcomingEvents as $event) {
-            $context .= "- " . $event->getTitle() . " (" . $event->getType()->name . ") : " .
-                $event->getDescription() . ". Le " . $event->getStartDatetime()->format('d/m/Y à H:i') .
-                " à " . $event->getAddress() . ".\n";
+        
+        foreach ($events as $event) {
+            $context .= "- Id : " . $event["id"]. " Titre : " . $event["title"] . " (" . $event["type"]->name . ") : " .
+                $event["description"] . ". Le " . $event["start_datetime"]->format('d/m/Y à H:i') .
+                " à " . $event["address"] . ".\n";
         }
 
         $context .= "\nDernières annonces de l'association :\n";
-        foreach ($recentAnnonces as $annonce) {
+        foreach ($annonces as $annonce) {
             $context .= "- [" . $annonce->getSentAt()->format('d/m/Y') . "] " . $annonce->getTitle() . " : " . $annonce->getContent() . "\n";
         }
 
