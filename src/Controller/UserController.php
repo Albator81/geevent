@@ -15,8 +15,22 @@ final class UserController extends AbstractController
     {
         $user = $this->getUser();
 
+        $futureEvents = [];
+        $pastEvents = [];
+        $now = new \DateTime();
+
+        foreach ($user->getEventsJoined() as $event) {
+            if ($event->getStartDatetime() >= $now) {
+                $futureEvents[] = $event;
+            } else {
+                $pastEvents[] = $event;
+            }
+        }
+
         return $this->render('user/index.html.twig', [
             'user' => $user,
+            'futureEvents' => $futureEvents,
+            'pastEvents' => $pastEvents,
         ]);
     }
 }

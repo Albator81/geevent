@@ -26,10 +26,35 @@
             </div>
 
             <div class="col-md-8">
-                <div class="alert alert-info">
-                    Les événements s'afficheront ici au prochain commit.
-                </div>
+                <h3 class="mb-3">Événements à venir</h3>
+                {% if futureEvents is empty %}
+                    <p class="text-muted">Vous n'êtes inscrit à aucun événement futur.</p>
+                {% else %}
+                    <div class="list-group mb-4">
+                        {% for event in futureEvents %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5 class="mb-1">{{ event.title }}</h5>
+                                    <small class="text-muted">Le {{ event.startDatetime|date('d/m/Y à H:i') }}</small>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <h3 class="mb-3 mt-5">Historique</h3>
+                {% if pastEvents is empty %}
+                    <p class="text-muted">Vous n'avez participé à aucun événement</p>
+                {% else %}
+                <ul class="list-group list-group-flush">
+                    {% for event in pastEvents %}
+                        <li class="list-group-item text-muted">
+                            {{ event.title }} - <small>{{ event.startDatetime|date('d/m/Y') }}</small>
+                        </li>
+                    {% endfor %}
+                </ul>
             </div>
         </div>
+        {% endif %}
     </div>
 {% endblock %}
