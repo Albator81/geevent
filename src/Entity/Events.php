@@ -245,4 +245,11 @@ class Events
 
         return $this;
     }
+
+    public function __toString(): string
+    {
+        $typeLabel = $this->type->value;
+        $date = $this->start_datetime->format('d/m/Y');
+        return sprintf('[%s] %s - %s', $typeLabel, $date, $this->title);
+    }
 }
