@@ -95,4 +95,16 @@ class Annonces
 
         return $this;
     }
+
+    public function isMembersOnly(): bool
+    {
+        return $this->sent_to === Target::MEMBERS;
+    }
+
+    public function setIsMembersOnly(bool $state): self
+    {
+        $this->sent_to = $state ? Target::MEMBERS : Target::ALL;
+
+        return $this;
+    }
 }
