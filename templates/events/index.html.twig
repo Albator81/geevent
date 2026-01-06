@@ -40,9 +40,28 @@
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         {% include "events/_events_list.html.twig" %}
     </div>
-    <div>
-        <button onclick=pageAvant()>Avant</button>
-        <button onclick=pageApres()>Apres</button>
+    <div class="d-flex justify-content-center gap-2 mt-5 mb-5">
+        <button onclick="pageAvant()" class="btn btn-outline-primary px-4 py-2" id="btnAvant">
+            <i class="bi bi-chevron-left"></i> Précédent
+        </button>
+        
+        <button onclick="pageApres()" class="btn btn-primary px-4 py-2">
+            Suivant <i class="bi bi-chevron-right"></i>
+        </button>
     </div>
 {% endif %}
+{% endblock %}
+
+{% block javascript %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        if (page <= 0) {
+            const btn = document.getElementById('btnAvant');
+            if (btn) {
+                btn.disabled = true;
+                btn.classList.add('disabled');
+            }
+        }
+    });
+</script>
 {% endblock %}
