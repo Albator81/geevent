@@ -35,19 +35,4 @@ final class UserController extends AbstractController
             'pastEvents' => $pastEvents,
         ]);
     }
-
-    #[Route('/events/{id<\d+>}/leave', name: 'app_events_leave')]
-    #[IsGranted('ROLE_USER')]
-    public function Sedesincrire(Events $event, EntityManagerInterface $em): Response
-    {
-        $user = $this->getUser();
-
-        $user->removeEventsJoined($event);
-
-        $em->flush();
-
-        $this->addFlash('success', 'Vous vous êtes désinscrit de l\'événement.');
-
-        return $this->redirectToRoute('app_profile');
-    }
 }
