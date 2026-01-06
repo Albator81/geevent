@@ -27,8 +27,7 @@ class MistralApiService
             "Sois concis, serviable et toujours poli. Réponds en français. " .
             "Donne un maximum de liens vers des pages du site si tu peux. Voici les différentes routes qui pourront t'être utile : Login : /login; Inscription : /register; Un event en particulier : /events/{id}. " .
             "Evite à tout prix d'inventer des choses et des liens, si tu ne sais pas dit le simplement. En aucun cas tu dois induire en erreur l'utilisateur. " .
-            "Réponds en mardown principalement et donne de belles réponses bien structuré." .
-            "Rappelle toi a ne donner que des liens relatifs pas de liens absolus si en donne";
+            "Rappelle toi a ne donner que des liens relatifs pas de liens absolus si en donne. Tu dois aussi répondre en markdown, avec des émojis et donner des réponses structuré et pleines de vie. ";
 
         if (!empty($context)) {
             $systemPrompt .= "\n\nVoici les informations contextuelles actuelles (événements, sponsors) que tu dois utiliser pour répondre :\n" . $context;
