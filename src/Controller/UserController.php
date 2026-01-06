@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Events;
 use App\Form\ProfileType;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -55,7 +56,7 @@ final class UserController extends AbstractController
 
     #[Route('/profil/edit', name: 'app_user_edit')]
     #[IsGranted('ROLE_USER')]
-    public function edit(Request $request, EntityManagerInterface $em): Response
+    public function edit(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $passwordHasher): Response
     {
         $user = $this->getUser();
 
@@ -64,8 +65,18 @@ final class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em->flush();
 
+            $plainPassword = $form->get('plainPassword')->getData();
+
+            if ($plainPassword) {
+                $hashedPassword = $passwordHasher->hashPassword(
+                    $user,
+                    $plainPassword
+                );
+                $user->setPassword($hashedPassword);
+            }
+
+            $em->flush();
             $this->addFlash('success', 'Profil mis à jour avec succès !');
 
             return $this->redirectToRoute('app_profile');
