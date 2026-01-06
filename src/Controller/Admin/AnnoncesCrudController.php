@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Annonces;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
@@ -15,14 +16,18 @@ class AnnoncesCrudController extends AbstractCrudController
         return Annonces::class;
     }
 
-    /*
     public function configureFields(string $pageName): iterable
     {
         return [
-            IdField::new('id'),
+            IdField::new('id')
+                ->onlyOnIndex(),
             TextField::new('title'),
-            TextEditorField::new('description'),
+            TextEditorField::new('content')
+                ->onlyOnForms(),
+            TextField::new('sent_by')
+                ->onlyOnIndex(),
+            BooleanField::new('sent_to', 'Public')
+                ->renderAsSwitch(false),
         ];
     }
-    */
 }
