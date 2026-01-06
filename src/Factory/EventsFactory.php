@@ -35,13 +35,18 @@ final class EventsFactory extends PersistentProxyObjectFactory
     #[\Override]
     protected function defaults(): array|callable
     {
+        // Date de début de l'event entre 2 semaines avant 
         $start = self::faker()->dateTimeBetween('-2 week', '+3 months');
         $end = (clone $start)->modify('+ '.rand(10, 128).' hours');
 
+        // Coordonées dans Reims et ses alentours
         $lat = self::faker()->randomFloat(6, 49.20, 49.30);
         $lon = self::faker()->randomFloat(6, 3.97, 4.08);
 
         $address = HttpClient::create()->request('GET', "https://nominatim.openstreetmap.org/reverse?lat=$lat&lon=$lon&format=json")->toArray();
+
+        // Une cover random
+        $cover = self::faker()->boolean(75) ? HttpClient::create()->request('GET', "https://picsum.photos/1920/1080")->getContent() : null;
 
         return [
             'title' => self::faker()->sentence(5),
@@ -55,6 +60,7 @@ final class EventsFactory extends PersistentProxyObjectFactory
             'type' => self::faker()->randomElement(Type::cases()),
             'sponsors' => SponsorsFactory::randomSet(rand(3, 6)),
             'participants' => UserFactory::randomSet(rand(2, 15)),
+            'cover' => $cover,
         ];
     }
 
@@ -64,6 +70,7 @@ final class EventsFactory extends PersistentProxyObjectFactory
     #[\Override]
     protected function initialize(): static
     {
+        // Ajouter l'event aux sponsors et aux participants
         return $this
             ->afterPersist(function (Events $event, array $attributes): void {
                 $sponsors = $attributes['sponsors'];

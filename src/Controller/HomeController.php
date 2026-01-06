@@ -19,6 +19,6 @@ final class HomeController extends AbstractController
     #[Route('/cgu', name: 'app_cgu')]
     public function cgu(): Response
     {
-        return $this->render('home/cgu.html.twig',);
+        return $this->render('home/cgu.html.twig');
     }
 }

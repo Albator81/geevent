@@ -1,0 +1,64 @@
+{% for event in events %}
+    <div class="col">
+        <div class="card h-100 shadow-sm hover-shadow transition-shadow">
+            <div class="ratio ratio-16x9">
+                <img src="{{event.cover ? path('app_events_cover', {id: event.id}) : asset('default_cover.png')}}" class="card-img-top" alt="Image de couverture de l'événement {{ event.title }}">
+            </div>                    
+            <div class="card-body d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <h5 class="card-title mb-0">
+                        <a href="{{ path('app_events_show', {id: event.id}) }}"
+                            class="text-decoration-none text-primary fw-bold hovered-underline">
+                            {{ event.title }}
+                        </a>
+                    </h5>
+                    <span class="badge rounded-pill text-bg-secondary }}">
+                        {{ event.type.value }}
+                    </span>
+                </div>
+
+                <p class="card-text text-muted small flex-grow-1">
+                    {{ event.description|striptags|slice(0, 150) ~ '...' }}
+                </p>
+
+                <hr class="my-3">
+
+                <div class="text-muted small">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="bi bi-calendar-event me-2 text-primary"></i>
+                        <div>
+                            <div>Du {{ event.start_datetime|format_datetime('medium', 'short', locale: 'fr') }} au {{ event.end_datetime|format_datetime('medium', 'short', locale: 'fr') }}</div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="bi bi-people-fill me-2 text-success"></i>
+                        {{ event.participants_count }} participant
+                    </div>
+
+                    <div class="d-flex align-items-center text-truncate">
+                        <i class="bi bi-geo-alt-fill me-2 text-danger"></i>
+                        <span class="text-truncate d-block" style="max-width: 250px;">
+                            {{ event.address }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="mt-3 d-flex justify-content-between align-items-center text-muted small">
+                    <span>
+                        <i class="bi bi-person-circle me-1"></i>
+                        Par <strong>{{ event.creator_username }}</strong>
+                    </span>
+                    <div class="text">
+                        <i class="bi bi-star-fill text-warning"></i>
+                        {% if event.sponsors_count > 0 %}
+                                {{ event.sponsors_count }} sponsors
+                        {% else %}
+                                Aucun sponsors
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}

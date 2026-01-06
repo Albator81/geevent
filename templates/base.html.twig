@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block title %}LAB-I*{% endblock %}</title>
+    <title>{% block title %}Ge'Event{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="shortcut icon" href="{{ asset('GeEvent_logo_img.png') }}" type="image/png">
@@ -11,6 +11,13 @@
         html, body{
             height: 100%;
             margin: 0;
+        }
+
+        .dropdown-item {
+            white-space: nowrap; 
+            overflow: hidden;
+            text-overflow: ellipsis; 
+            display: block; 
         }
     </style>
     {% block stylesheets %}{% endblock %}
@@ -21,18 +28,37 @@
             <a class="navbar-brand d-flex align-items-center" href="/">
                 <img src="{{ asset('GeEvent_logo_img.png') }}" alt="Ge'Event logo" height="70" class="me-2">
             </a>
+            
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div id="navbarContent" class="collapse navbar-collapse">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a href="{{ path('app_home') }}" class="nav-link text-dark">Accueil</a></li>
-                    <li class="nav-item"><a href="{{ path('app_annonces') }}" class="nav-link text-dark">Annonces</a></li>
-                    <li class="nav-item"><a href="{{ path('app_events') }}" class="nav-link text-dark">Events</a></li>
-                    <li class="nav-item"><a href="{{ path('app_events', {d: 'c'}) }}" class="nav-link text-dark">Carte</a></li>
-                    <li class="nav-item"><a href="{{ path('app_sponsors') }}" class="nav-link text-dark">Sponsors</a></li>
-                </ul>
-                {% if app.user %}
+            
+            <div id="navbarContent" class="collapse navbar-collapse w-100">
+                
+                <div class="d-lg-flex w-100 align-items-center">
+
+                    <form role="search" action="{{ path('app_events') }}" method="get" style="min-width: 300px;">
+                        <div style="position: relative; margin-bottom: 0;"> 
+                            <div class="input-group input-group-sm">
+                                <input class="form-control border-0 bg-light" type="search" placeholder="Rechercher un événement..." name="search" id="search" value="{{ search|default("") }}"> 
+                                <button class="btn btn-primary" type="submit" title="Rechercher">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                            </div>
+                            
+                            <div id="results" class="dropdown-menu" style="width: 100%;"></div>
+                        </div>
+                    </form>
+
+                    <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+                        <li class="nav-item"><a href="{{ path('app_home') }}" class="nav-link text-dark">Accueil</a></li>
+                        <li class="nav-item"><a href="{{ path('app_annonces') }}" class="nav-link text-dark">Annonces</a></li>
+                        <li class="nav-item"><a href="{{ path('app_events') }}" class="nav-link text-dark">Events</a></li>
+                        <li class="nav-item"><a href="{{ path('app_events', {display: 'c'}) }}" class="nav-link text-dark">Carte</a></li>
+                        <li class="nav-item"><a href="{{ path('app_sponsors') }}" class="nav-link text-dark">Sponsors</a></li>
+                        <li class="nav-item"><a href="{{ path('app_chatbot') }}" class="nav-link text-dark">Chatbot</a></li>
+                    </ul>
+                    {% if app.user %}
                         <div class="dropdown">
                             <a href="#" class="btn btn-primary dropdown-toggle d-flex align-items-center" role="button" data-bs-toggle="dropdown">
                                 <i class="bi bi-person-circle me-2"></i>
@@ -48,7 +74,6 @@
                             </ul>
                         </div>
                     {% else %}
-                        
                         <div class="hstack gap-3">
                             <a href="{{ path('app_login') }}" class="btn btn-outline-primary d-flex align-items-center">
                                 <i class="bi bi-person-fill me-2"></i>
@@ -61,6 +86,7 @@
                             </a>
                         </div>
                     {% endif %}
+                </div>
             </div>
         </div>
     </nav>
@@ -90,6 +116,7 @@
         <div><a href="{{path('app_cgu')}}">Conditions générales d'utilisation</a></div>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{asset('ajax_searchbar.js')}}"></script>
     {% block javascripts %}{% endblock %}
 </body>
 </html>
