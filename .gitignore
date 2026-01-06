@@ -25,4 +25,4 @@
 ###< friendsofphp/php-cs-fixer ###
 
 /public/uploads/*/*
-!/public/uploads/sponsors/default.png
+!/public/uploads/*/default.png

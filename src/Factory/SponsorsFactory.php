@@ -4,6 +4,7 @@ namespace App\Factory;
 
 use App\Entity\Sponsors;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 
 /**
  * @extends PersistentProxyObjectFactory<Sponsors>
@@ -35,20 +36,26 @@ final class SponsorsFactory extends PersistentProxyObjectFactory
     {
         $sourceDir = __DIR__ . '/images';
         $publicDir = __DIR__ . '/../../public/uploads/sponsors';
-
         $imageName = null;
+        $slugger = new AsciiSlugger(); //utilisé pour normalisé le nomage
 
         $imagesDir = __DIR__ . '/images';
         $images = array_diff(scandir($imagesDir), ['.', '..']);
         $randomImage = $images[array_rand($images)];
-        copy($sourceDir . '/' . $randomImage, $publicDir . '/' . $randomImage);
-        $imageName = $randomImage;
 
+        $fileInfo = pathinfo($randomImage);
+        $filename = $fileInfo['filename'];
+        $extension = $fileInfo['extension'];
+
+        $sluggedFileName = $slugger->slug($filename)->lower();
+        $sluggedImage = $sluggedFileName . '.' . strtolower($extension);
+
+        copy($sourceDir . '/' . $randomImage, $publicDir . '/' . $sluggedImage);
 
         return [
             'name' => self::faker()->company(),
             'websiteUrl' => self::faker()->url(),
-            'logoPath' => $imageName,
+            'logoPath' => $sluggedImage,
         ];
     }
 
