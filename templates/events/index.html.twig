@@ -3,6 +3,23 @@
 {% block title %}Liste des événements{% endblock %}
 
 {% block body %}
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const page = Number(urlParams.get('page'));
+    const search = urlParams.get('search') ?? "";
+    const display = urlParams.get('display') ?? "";
+    
+    function pageAvant() {
+        if (page !== null && page >= 1) {
+            window.location.href = window.location.pathname + "?display=" + display + "&search=" + search + "&page=" + (page - 1);
+        }
+    }
+
+    function pageApres() {
+        window.location.href = window.location.pathname + "?display=" + display + "&search=" + search + "&page=" + (page + 1);
+    }
+</script>
+
 <div class="row">
     <div class="col-12 text-center mb-4">
         <h1 class="display-5 fw-bold text-primary">Liste des événements</h1>
@@ -22,6 +39,10 @@
 {% else %}
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         {% include "events/_events_list.html.twig" %}
+    </div>
+    <div>
+        <button onclick=pageAvant()>Avant</button>
+        <button onclick=pageApres()>Apres</button>
     </div>
 {% endif %}
 {% endblock %}

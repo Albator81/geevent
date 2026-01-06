@@ -25,7 +25,8 @@ final class EventsController extends AbstractController
         #[MapQueryParameter] string $search = '',  // Récupère le paramètre ?search= dans l'URL
         #[MapQueryParameter] int $page = 0         // Récupère le paramètre ?page= dans l'URL
     ): Response {
-        // Utilise une méthode personnalisée du repository pour filtrer les résultats
+        if ($page < 0) $page = 0;
+
         $events = $eventsRepository->betterFindAll($search, $page * 6, 6);
         
         // Si le mode d'affichage est 'c' (carte), on utilise un template spécifique
