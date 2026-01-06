@@ -51,17 +51,3 @@
     </div>
 {% endif %}
 {% endblock %}
-
-{% block javascript %}
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        if (page <= 0) {
-            const btn = document.getElementById('btnAvant');
-            if (btn) {
-                btn.disabled = true;
-                btn.classList.add('disabled');
-            }
-        }
-    });
-</script>
-{% endblock %}
