@@ -143,7 +143,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __serialize(): array
     {
         $data = (array) $this;
-        $data["\0".self::class."\0password"] = hash('crc32c', $this->password);
+        $data["\0" . self::class . "\0password"] = hash('crc32c', $this->password);
 
         return $data;
     }
@@ -284,5 +284,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->verified = $verified;
 
         return $this;
+    }
+
+    public function __tostring(): string
+    {
+        return $this->username;
     }
 }
