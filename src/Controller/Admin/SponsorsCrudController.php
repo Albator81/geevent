@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Sponsors;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\UrlField;
@@ -32,13 +33,11 @@ class SponsorsCrudController extends AbstractCrudController
                 // Ici on renomme le fichier pour éviter les doublons
                 ->setUploadedFileNamePattern('[slug]-[timestamp].[extension]')
                 ->setRequired(false),
-            UrlField::new('website_url'),
+            UrlField::new('website_url')->setHelp('<strong>Votre url doit être sous a forme: https://example.com</strong>'),
+            FormField::addPanel(''),
             AssociationField::new('event', 'Sponsored Events')
                 ->autocomplete()
-                //Tri du plus récent au plus vieu
-                ->setQueryBuilder(
-                    fn(QueryBuilder $queryBuilder): QueryBuilder => $queryBuilder->orderBy('entity.start_datetime', 'DESC')
-                ),
+                ->setHelp('<strong>Recherche disponible uniquement par <b>Titre</b> ou <b>Description</b> (le type et la date ne sont pas recherchables).</strong>')
         ];
     }
 }

@@ -250,6 +250,6 @@ class Events
     {
         $typeLabel = $this->type->value;
         $date = $this->start_datetime->format('d/m/Y');
-        return sprintf('[%s] %s - %s', $typeLabel, $date, $this->title);
+        return sprintf('[%s %s] %s', $typeLabel, $date, $this->title);
     }
 }
