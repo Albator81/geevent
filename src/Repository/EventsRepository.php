@@ -24,7 +24,7 @@ class EventsRepository extends ServiceEntityRepository
      * @param int|null $end Index de fin (utilisé pour calculer le nombre de résultats).
      * @return array Un tableau multidimensionnel (pas des objets Event).
      */
-    public function betterFindAll(string $search, int $start = null, int $end = null): array
+    public function betterFindAll(string $search, int $start = null, int $maxResults = null): array
     {
         $qb = $this->createQueryBuilder('e');
 
@@ -57,9 +57,9 @@ class EventsRepository extends ServiceEntityRepository
         }
 
         // Gestion de la limitation des résultats
-        if ($start !== null && $end !== null) {
+        if ($start !== null && $maxResults !== null) {
             $qb->setFirstResult($start);
-            $qb->setMaxResults($end - $start);
+            $qb->setMaxResults($maxResults);
         }
 
         // Tri par date de fin décroissante et exécution de la requête
