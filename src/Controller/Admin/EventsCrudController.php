@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Events;
 use App\Enum\Type;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
@@ -16,6 +17,13 @@ class EventsCrudController extends AbstractCrudController
     public static function getEntityFqcn(): string
     {
         return Events::class;
+    }
+
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            ->setSearchFields(['title', 'description'])
+            ->setDefaultSort(['type' => 'ASC', 'start_datetime' => 'DESC']);
     }
 
     public function configureFields(string $pageName): iterable
