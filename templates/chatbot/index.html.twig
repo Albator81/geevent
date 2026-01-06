@@ -1,34 +1,26 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Assistant Sacrée Tech{% endblock %}
+{% block title %}ChatBot{% endblock %}
 
 {% block body %}
 <div class="container mt-4">
-    <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0"><i class="bi bi-robot me-2"></i>Assistant Virtuel</h5>
-                    <small>Sacrée Tech</small>
-                </div>
-                <div class="card-body overflow-auto" id="chat-history" style="height: 400px; background-color: #f8f9fa;">
-                    <div class="text-center text-muted small mt-2">
-                        Posez une question sur les événements ou l'association.
-                    </div>
-                </div>
-                <div class="card-footer bg-white">
-                    <form id="chat-form" class="d-flex gap-2">
-                        <input type="text" id="user-message" class="form-control" placeholder="Votre message..." required autocomplete="off">
-                        <button type="submit" class="btn btn-primary" id="send-btn">
-                            <i class="bi bi-send-fill"></i>
-                        </button>
-                    </form>
-                </div>
+    <div class="card mx-auto">
+        <div id="chat-history" class="card-body overflow-auto" style="height: 60vh">
+            <div class="d-flex flex-column align-items-start mb-3">
+                <div class="bg-light p-2 rounded shadow-sm">Bonjour ! Comment puis-je vous aider ?</div>
             </div>
+        </div>
+
+        <div class="card-footer bg-white">
+            <form id="chat-form" class="input-group">
+                <input type="text" id="user-message" class="form-control" placeholder="Votre message..." required autocomplete="off">
+                <button class="btn btn-primary" type="submit" id="send-btn">
+                    <i class="bi bi-send-fill"></i>
+                </button>
+            </form>
         </div>
     </div>
 </div>
-
 {% endblock %}
 
 {% block javascripts %}
