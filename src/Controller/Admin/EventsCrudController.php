@@ -35,30 +35,16 @@ class EventsCrudController extends AbstractCrudController
             IdField::new('id')
                 ->onlyOnIndex(),
             TextField::new('title'),
+            ImageField::new('cover')
+                ->onlyOnForms()
+                // Ici on spécifie le dossier où EasyAdmin va stocker les fichiers car il ne seront pas dans le chemin par défaut "public/uploads/images"
+                ->setUploadDir('public/uploads/events')
+                ->setBasePath('uploads/events')
+                // Ici on renomme le fichier pour éviter les doublons
+                ->setUploadedFileNamePattern('[slug]-[timestamp].[extension]')
+                ->setRequired(false),
             TextEditorField::new('description')
                 ->onlyOnForms(),
-            NumberField::new('latitude')
-                ->onlyOnForms()
-                ->setRequired(false)
-                ->setNumDecimals(6)
-                ->setStoredAsString(),
-            NumberField::new('longitude')
-                ->onlyOnForms()
-                ->setRequired(false)
-                ->setNumDecimals(6)
-                ->setStoredAsString(),
-            DateTimeField::new('start_datetime')
-                ->setFormat('dd/MM/yyyy'),
-            DateTimeField::new('end_datetime')
-                ->setFormat('dd/MM/yyyy'),
-
-            TextField::new('created_by')
-                ->onlyOnIndex(),
-
-            //AssociationField::new('sponsors')
-            //    ->autocomplete()
-            //    ->setHelp('<strong>Recherche disponible uniquement par <b>Titre</b> ou <b>Description</b> (le type et la date ne sont pas recherchables).</strong>'),
-
             ChoiceField::new('type')
                 ->setChoices([
                     'Meetup' => Type::MEETUP,
@@ -70,21 +56,30 @@ class EventsCrudController extends AbstractCrudController
                     }
                     return 'Apéro';
                 }),
-
+            DateTimeField::new('start_datetime')
+                ->setFormat('dd/MM/yyyy'),
+            DateTimeField::new('end_datetime')
+                ->setFormat('dd/MM/yyyy'),
+            TextField::new('created_by')
+                ->onlyOnIndex(),
             TextField::new('address')
                 ->onlyOnForms(),
-
+            NumberField::new('latitude')
+                ->onlyOnForms()
+                ->setRequired(false)
+                ->setNumDecimals(6)
+                ->setStoredAsString(),
+            NumberField::new('longitude')
+                ->onlyOnForms()
+                ->setRequired(false)
+                ->setNumDecimals(6)
+                ->setStoredAsString(),
+            AssociationField::new('sponsors')
+                ->autocomplete()
+                ->setHelp('<strong>Recherche disponible uniquement par <b>Nom</b>.</strong>'),
             AssociationField::new('participants')
                 ->autocomplete()
-                ->setHelp('<strong>Recherche disponible uniquement par <b>Titre</b> ou <b>Description</b> (le type et la date ne sont pas recherchables).</strong>'),
-            ImageField::new('cover')
-                ->onlyOnForms()
-                // Ici on spécifie le dossier où EasyAdmin va stocker les fichiers car il ne seront pas dans le chemin par défaut "public/uploads/images"
-                ->setUploadDir('public/uploads/events')
-                ->setBasePath('uploads/events')
-                // Ici on renomme le fichier pour éviter les doublons
-                ->setUploadedFileNamePattern('[slug]-[timestamp].[extension]')
-                ->setRequired(false),
+                ->setHelp('<strong>Recherche disponible uniquement par <b>Username</b>.</strong>'),
         ];
     }
 }

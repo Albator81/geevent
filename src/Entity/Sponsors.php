@@ -100,4 +100,9 @@ class Sponsors
 
         return $this;
     }
+
+    public function __toString(): string
+    {
+        return sprintf('%s', $this->name);
+    }
 }
