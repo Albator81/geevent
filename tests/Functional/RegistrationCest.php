@@ -17,8 +17,9 @@ final class LoginCest
     // All `public` methods will be executed as tests.
     public function tryRegister(FunctionalTester $I): void
     {
-        $I->click("login");
-        $I->submitForm("registration_form", [
+        $I->amOnPage("/");
+        $I->click("Connexion");
+        $I->submitForm("form", [
             "username" => "Testing123", 
             "email" => "baaaaa@gmail.com", 
             "plainPassword" => "passwordtest",
