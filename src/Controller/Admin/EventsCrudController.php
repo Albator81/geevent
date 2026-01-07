@@ -82,4 +82,13 @@ class EventsCrudController extends AbstractCrudController
                 ->setHelp('<strong>Recherche disponible uniquement par <b>Username</b>.</strong>'),
         ];
     }
+
+    public function createEntity(string $entityFqcn)
+    {
+        $event = new Events();
+        $event->setCreatedBy($this->getUser());
+        $event->setLatitude(0);
+        $event->setLongitude(0);
+        return $event;
+    }
 }
