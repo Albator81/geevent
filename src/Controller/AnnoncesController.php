@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Annonces;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use App\Repository\AnnoncesRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,6 +22,17 @@ final class AnnoncesController extends AbstractController
 
         return $this->render('annonces/index.html.twig', [
             'annonces' => $annonces,
+        ]);
+    }
+
+    /**
+     * Affiche les détails d'une annonce specifique
+     */
+    #[Route('/annonces/{id<\d+>}', name: 'app_annonces_show')]
+    public function show(Annonces $annonce): Response
+    {
+        return $this->render('annonces/show.html.twig', [
+            'annonce' => $annonce,
         ]);
     }
 }
