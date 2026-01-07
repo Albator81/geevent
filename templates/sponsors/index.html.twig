@@ -6,58 +6,55 @@
     <div class="sponsors-page-container">
         <div class="text-center mb-5">
             <h1 class="display-4">Ils nous soutiennent</h1>
-            <p class="lead text-muted">Merci à nos incroyables partenaires qui rendent nos événements possible.</p>
+            <p class="lead text-muted">Merci à nos incroyables partenaires qui rendent cet événement possible.</p>
         </div>
 
         <div class="sponsors-grid">
             {% for sponsor in sponsors %}
-            {% set tagName = sponsor.websiteUrl ? 'a' : 'div' %}
+                <a href="{{ path('app_sponsors_show', {id: sponsor.id}) }}" class="sponsor-card">
 
-            <{{ tagName }}
-            {% if sponsor.websiteUrl %}href="{{ sponsor.websiteUrl }}" target="_blank" rel="noopener"{% endif %}
-            class="sponsor-card"
-            >
-            <div class="img-container">
-                {% if sponsor.logoPath %}
-                    <img src="{{ asset('uploads/sponsors/' ~ sponsor.logoPath) }}" alt="{{ sponsor.name }}" class="sponsor-img">
-                {% else %}
-                    <span style="font-size: 3rem; color: #ccc;">📷</span>
-                {% endif %}
-            </div>
+                    <div class="img-container">
+                        {% if sponsor.logoPath %}
+                            <img src="{{ asset('uploads/sponsors/' ~ sponsor.logoPath) }}" alt="{{ sponsor.name }}" class="sponsor-img">
+                        {% else %}
+                            <span style="font-size: 3rem; color: #ccc;">📷</span>
+                        {% endif %}
+                    </div>
 
-            <div class="sponsor-name">
-                {{ sponsor.name }}
-            </div>
-        </{{ tagName }}>
-        {% else %}
-            <div class="col-12 text-center" style="grid-column: 1 / -1;">
-                <p>Aucun sponsor n'est enregistré pour le moment.</p>
-            </div>
-        {% endfor %}
-    </div>
-    {% if maxPage > 1 %}
-        <div class="pagination-container">
-            <div class="d-flex justify-content-center align-items-center gap-3">
-                {% if currentPage > 1 %}
-                    <a href="{{ path('app_sponsors', {page: currentPage - 1}) }}" class="btn btn-outline-primary px-4">
-                        &lt; Précédent
-                    </a>
-                {% else %}
-                    <button class="btn btn-outline-secondary px-4" disabled>&lt; Précédent</button>
-                {% endif %}
-
-                <span class="text-muted fw-bold">Page {{ currentPage }} / {{ maxPage }}</span>
-
-                {% if currentPage < maxPage %}
-                    <a href="{{ path('app_sponsors', {page: currentPage + 1}) }}" class="btn btn-primary px-4">
-                        Suivant &gt;
-                    </a>
-                {% else %}
-                    <button class="btn btn-outline-secondary px-4" disabled>Suivant &gt;</button>
-                {% endif %}
-            </div>
+                    <div class="sponsor-name">
+                        {{ sponsor.name }}
+                    </div>
+                </a>
+            {% else %}
+                <div class="col-12 text-center" style="grid-column: 1 / -1;">
+                    <p>Aucun sponsor n'est enregistré pour le moment.</p>
+                </div>
+            {% endfor %}
         </div>
-    {% endif %}
+
+        {% if maxPage > 1 %}
+            <div class="pagination-container">
+                <div class="d-flex justify-content-center align-items-center gap-3">
+                    {% if currentPage > 1 %}
+                        <a href="{{ path('app_sponsors', {page: currentPage - 1}) }}" class="btn btn-outline-primary px-4">
+                            &lt; Précédent
+                        </a>
+                    {% else %}
+                        <button class="btn btn-outline-secondary px-4" disabled>&lt; Précédent</button>
+                    {% endif %}
+
+                    <span class="text-muted fw-bold">Page {{ currentPage }} / {{ maxPage }}</span>
+
+                    {% if currentPage < maxPage %}
+                        <a href="{{ path('app_sponsors', {page: currentPage + 1}) }}" class="btn btn-primary px-4">
+                            Suivant &gt;
+                        </a>
+                    {% else %}
+                        <button class="btn btn-outline-secondary px-4" disabled>Suivant &gt;</button>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
     </div>
 
     <style>
@@ -97,6 +94,7 @@
             text-decoration: none;
             color: inherit;
             border: 1px solid #f0f0f0;
+            cursor: pointer;
         }
 
         .sponsor-card:hover {

@@ -31,4 +31,11 @@ final class SponsorsController extends AbstractController
             'maxPage' => $maxPage,
         ]);
     }
+    #[Route('/sponsors/{id}', name: 'app_sponsors_show', methods: ['GET'])]
+    public function show(Sponsors $sponsor): Response
+    {
+        return $this->render('sponsors/show.html.twig', [
+            'sponsor' => $sponsor,
+        ]);
+    }
 }
