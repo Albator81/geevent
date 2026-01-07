@@ -26,16 +26,17 @@ final class EventsController extends AbstractController
         #[MapQueryParameter] int $page = 0         // Récupère le paramètre ?page= dans l'URL
     ): Response {
         if ($page < 0) $page = 0;
-
-        $events = $eventsRepository->betterFindAll($search, $page * 6, 6);
         
         // Si le mode d'affichage est 'c' (carte), on utilise un template spécifique
         if ('c' === $display) {
+            $events = $eventsRepository->betterFindAll($search);
             return $this->render('events/carte.html.twig', [
                 'events' => $events,
                 'search' => $search,
             ]);
         }
+
+        $events = $eventsRepository->betterFindAll($search, $page * 6, 6);
 
         // Par défaut, rendu de la liste classique
         return $this->render('events/index.html.twig', [
