@@ -19,16 +19,16 @@ final class LoginCest
     {
         $u = UserFactory::createOne([
             "username" => "Testing", 
-            "email" => "test@gmail.com",
             "password" => "passwordtest",
         ]);
 
         $I->amOnPage("/login");
-        $I->submitForm('form[name="login"]', [
-            "username" => "Testing", 
-            "password" => "passwordtest",
-            "_remember_me" => "0",
-        ]);
+
+        $I->fillField('username', 'Testing');
+        $I->fillField('password', 'passwordtest');
+        $I->checkOption('#rememberMe');
+        $I->click('Connexion'); 
+
         $I->seeCurrentRouteIs("app_profile");
     }
 }
