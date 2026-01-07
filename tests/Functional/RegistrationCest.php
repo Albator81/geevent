@@ -6,7 +6,7 @@ namespace Tests\Functional;
 
 use Tests\Support\FunctionalTester;
 
-final class LoginCest
+final class RegistrationCest
 {
     public function _before(FunctionalTester $I): void
     {
@@ -18,7 +18,7 @@ final class LoginCest
     public function tryRegister(FunctionalTester $I): void
     {
         $I->amOnPage("/");
-        $I->click("Connexion");
+        $I->click("Inscription");
         $I->submitForm("form", [
             "username" => "Testing123", 
             "email" => "baaaaa@gmail.com", 
