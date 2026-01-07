@@ -3,23 +3,21 @@
 namespace App\Controller\Admin;
 
 use App\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Uid\Uuid;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 
 class UserCrudController extends AbstractCrudController
 {
-
     public function __construct(private UserPasswordHasherInterface $passwordHasher)
     {
-
     }
 
     public static function getEntityFqcn(): string
@@ -27,17 +25,17 @@ class UserCrudController extends AbstractCrudController
         return User::class;
     }
 
-
     public function configureFields(string $pageName): iterable
     {
         $isOwnProfile = false;
-        if ($pageName === Crud::PAGE_EDIT) {
+        if (Crud::PAGE_EDIT === $pageName) {
             $entity = $this->getContext()->getEntity()->getInstance();
             $currentUser = $this->getUser();
             if ($currentUser instanceof User && $entity->getId() === $currentUser->getId()) {
                 $isOwnProfile = true;
             }
         }
+
         return [
             IdField::new('id')
                 ->onlyOnIndex(),
@@ -46,7 +44,7 @@ class UserCrudController extends AbstractCrudController
                 ->setFormType(PasswordType::class)
                 ->onlyOnForms()
                 ->setFormTypeOption('mapped', false)
-                ->setRequired($pageName === Crud::PAGE_NEW),
+                ->setRequired(Crud::PAGE_NEW === $pageName),
             BooleanField::new('isAdmin')
                 ->renderAsSwitch(false)
                 ->setDisabled($isOwnProfile),
@@ -73,6 +71,7 @@ class UserCrudController extends AbstractCrudController
     {
         $user = new User();
         $user->setVerificationToken(Uuid::v4());
+
         return $user;
     }
 
@@ -103,4 +102,3 @@ class UserCrudController extends AbstractCrudController
         parent::deleteEntity($entityManager, $entityInstance);
     }
 }
-
