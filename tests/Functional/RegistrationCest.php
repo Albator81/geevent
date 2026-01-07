@@ -11,7 +11,6 @@ final class RegistrationCest
     public function _before(FunctionalTester $I): void
     {
         // Code here will be executed before each test function.
-        $I->amGoingTo("/");
     }
 
     // All `public` methods will be executed as tests.
@@ -25,10 +24,6 @@ final class RegistrationCest
             "plainPassword" => "passwordtest",
             "agreeTerms" => "1"
         ]);
-        // $I->fillField("username","Testing123");
-        // $I->fillField("email","baaaa@gmail.com");
-        // $I->fillField("plainPassword","passwordTest");
-        // $I->checkOption("agreeTerms");
         $I->seeEmailIsSent();
     }
 }
