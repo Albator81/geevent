@@ -24,7 +24,6 @@ class AnnoncesRepository extends ServiceEntityRepository
             'a.id',
             'a.title',
             'a.content',
-            'a.sent_by',
             'a.sent_at',
             'u.username as creator_username',
         ])
