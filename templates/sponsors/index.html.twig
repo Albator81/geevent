@@ -1,20 +1,133 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello SponsorsController!{% endblock %}
+{% block title %}Nos Sponsors{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    <div class="sponsors-page-container">
+        <div class="text-center mb-5">
+            <h1 class="display-4">Ils nous soutiennent</h1>
+            <p class="lead text-muted">Merci à nos incroyables partenaires qui rendent cet événement possible.</p>
+        </div>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+        <div class="sponsors-grid">
+            {% for sponsor in sponsors %}
+                <a href="{{ path('app_sponsors_show', {id: sponsor.id}) }}" class="sponsor-card">
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/Users/Adam/Documents/php/GeEvent/src/Controller/SponsorsController.php</code></li>
-        <li>Your template at <code>C:/Users/Adam/Documents/php/GeEvent/templates/sponsors/index.html.twig</code></li>
-    </ul>
-</div>
+                    <div class="img-container">
+                        {% if sponsor.logoPath %}
+                            <img src="{{ asset('uploads/sponsors/' ~ sponsor.logoPath) }}" alt="{{ sponsor.name }}" class="sponsor-img">
+                        {% else %}
+                            <span style="font-size: 3rem; color: #ccc;">📷</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="sponsor-name">
+                        {{ sponsor.name }}
+                    </div>
+                </a>
+            {% else %}
+                <div class="col-12 text-center" style="grid-column: 1 / -1;">
+                    <p>Aucun sponsor n'est enregistré pour le moment.</p>
+                </div>
+            {% endfor %}
+        </div>
+
+        {% if maxPage > 1 %}
+            <div class="pagination-container">
+                <div class="d-flex justify-content-center align-items-center gap-3">
+                    {% if currentPage > 1 %}
+                        <a href="{{ path('app_sponsors', {page: currentPage - 1}) }}" class="btn btn-outline-primary px-4">
+                            &lt; Précédent
+                        </a>
+                    {% else %}
+                        <button class="btn btn-outline-secondary px-4" disabled>&lt; Précédent</button>
+                    {% endif %}
+
+                    <span class="text-muted fw-bold">Page {{ currentPage }} / {{ maxPage }}</span>
+
+                    {% if currentPage < maxPage %}
+                        <a href="{{ path('app_sponsors', {page: currentPage + 1}) }}" class="btn btn-primary px-4">
+                            Suivant &gt;
+                        </a>
+                    {% else %}
+                        <button class="btn btn-outline-secondary px-4" disabled>Suivant &gt;</button>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <style>
+        .sponsors-page-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 1rem;
+        }
+
+        .sponsors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 2rem;
+            justify-items: center;
+            margin-bottom: 3rem;
+        }
+
+        .pagination-container {
+            width: 100%;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+
+        .sponsor-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            padding: 1.5rem;
+            width: 100%;
+            height: 220px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            border: 1px solid #f0f0f0;
+            cursor: pointer;
+        }
+
+        .sponsor-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border-color: #e0e0e0;
+            color: inherit;
+        }
+
+        .img-container {
+            height: 120px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .sponsor-img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .sponsor-name {
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: #333;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+        }
+    </style>
 {% endblock %}
