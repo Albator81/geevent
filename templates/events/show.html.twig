@@ -121,7 +121,7 @@
         </div>
         <div class="col-lg-6 d-flex flex-column">
             <div class="ratio ratio-16x9 mb-3 rounded shadow-sm">
-                <img src="{{event.cover ? path('app_events_cover', {id: event.id}) : asset('default_cover.png')}}" class="card-img-top rounded" alt="Image de couverture de l'événement {{ event.title }}">
+                <img src="{{ event.cover ? path('app_events_cover', {id: event.id}) : asset('default_cover.png') }}" class="card-img-top rounded" alt="Image de couverture de l'événement {{ event.title }}">
             </div>
 
             <div id="map" class="flex-grow-1 shadow rounded" style="min-height:400px;"></div>

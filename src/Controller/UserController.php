@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Events;
 use App\Form\ProfileType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;

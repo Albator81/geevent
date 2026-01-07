@@ -35,7 +35,7 @@ final class EventsFactory extends PersistentProxyObjectFactory
     #[\Override]
     protected function defaults(): array|callable
     {
-        // Date de début de l'event entre 2 semaines avant 
+        // Date de début de l'event entre 2 semaines avant
         $start = self::faker()->dateTimeBetween('-2 week', '+3 months');
         $end = (clone $start)->modify('+ '.rand(10, 128).' hours');
 
@@ -46,7 +46,7 @@ final class EventsFactory extends PersistentProxyObjectFactory
         $address = HttpClient::create()->request('GET', "https://nominatim.openstreetmap.org/reverse?lat=$lat&lon=$lon&format=json")->toArray();
 
         // Une cover random
-        $cover = self::faker()->boolean(75) ? HttpClient::create()->request('GET', "https://picsum.photos/1920/1080")->getContent() : null;
+        $cover = self::faker()->boolean(75) ? HttpClient::create()->request('GET', 'https://picsum.photos/1920/1080')->getContent() : null;
 
         return [
             'title' => self::faker()->sentence(5),

@@ -8,9 +8,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\UrlField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use Doctrine\ORM\QueryBuilder;
+use EasyCorp\Bundle\EasyAdminBundle\Field\UrlField;
 
 class SponsorsCrudController extends AbstractCrudController
 {
@@ -39,7 +38,7 @@ class SponsorsCrudController extends AbstractCrudController
             FormField::addPanel(''),
             AssociationField::new('event', 'Sponsored Events')
                 ->autocomplete()
-                ->setHelp('<strong>Recherche disponible uniquement par <b>Titre</b> ou <b>Description</b> (le type et la date ne sont pas recherchables).</strong>')
+                ->setHelp('<strong>Recherche disponible uniquement par <b>Titre</b> ou <b>Description</b> (le type et la date ne sont pas recherchables).</strong>'),
         ];
     }
 }

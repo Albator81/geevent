@@ -26,7 +26,7 @@ class ChatbotController extends AbstractController
         MistralApiService $mistralApiService,
         EventsRepository $eventsRepository,
         SponsorsRepository $sponsorsRepository,
-        AnnoncesRepository $annoncesRepository
+        AnnoncesRepository $annoncesRepository,
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
         $userMessage = $data['message'] ?? null;
@@ -35,36 +35,60 @@ class ChatbotController extends AbstractController
             return new JsonResponse(['error' => 'Message is empty'], 400);
         }
 
-        $events = $eventsRepository->betterFindAll('', 0, 50);
+        $session = $request->getSession();
+        $history = $session->get('chatbot_history', []);
 
+        $history[] = ['role' => 'user', 'content' => $userMessage];
+
+        $events = $eventsRepository->betterFindAll('', 0, 50);
         $annonces = $annoncesRepository->findAll();
         $sponsors = $sponsorsRepository->findAll();
+        $context = 'Date actuelle : '.(new \DateTime())->format('d/m/Y H:i')."\n\n";
 
-        $context = "Date actuelle : " . (new \DateTime())->format('d/m/Y H:i') . "\n\n";
-
-        $context .= "Prochains événements :\n";
-        
         foreach ($events as $event) {
-            $context .= "- Id : " . $event["id"]. " Titre : " . $event["title"] . " (" . $event["type"]->name . ") : " .
-                $event["description"] . ". Le " . $event["start_datetime"]->format('d/m/Y à H:i') .
-                " à " . $event["address"] . ".\n";
+            $context .= '- Id : '.$event['id'].' Titre : '.$event['title'].' ('.$event['type']->name.') : '.
+                $event['description'].'. Le '.$event['start_datetime']->format('d/m/Y à H:i').
+                ' à '.$event['address'].".\n";
         }
 
         $context .= "\nDernières annonces de l'association :\n";
         foreach ($annonces as $annonce) {
-            $context .= "- [" . $annonce->getSentAt()->format('d/m/Y') . "] " . $annonce->getTitle() . " : " . $annonce->getContent() . "\n";
+            $context .= '- ['.$annonce->getSentAt()->format('d/m/Y').'] '.$annonce->getTitle().' : '.$annonce->getContent()."\n";
         }
 
         $context .= "\nSponsors de l'association :\n";
         foreach ($sponsors as $sponsor) {
-            $context .= "- " . $sponsor->getName() . " (" . ($sponsor->getWebsiteUrl() ?? 'Pas de site') . ")\n";
+            $context .= '- '.$sponsor->getName().' ('.($sponsor->getWebsiteUrl() ?? 'Pas de site').")\n";
         }
 
         try {
-            $botResponse = $mistralApiService->getResponse($userMessage, $context);
+            $botResponse = $mistralApiService->getResponse($history, $context);
+
+            $history[] = ['role' => 'assistant', 'content' => $botResponse];
+
+            $session->set('chatbot_history', $history);
+
             return new JsonResponse(['response' => $botResponse]);
         } catch (\Exception $e) {
-            return new JsonResponse(['error' => 'Une erreur est survenue: ' . $e->getMessage()], 500);
+            return new JsonResponse(['error' => 'Une erreur est survenue'], 500);
         }
+    }
+
+    #[Route('/chatbot/history', name: 'app_chatbot_history')]
+    public function history(Request $request): JsonResponse
+    {
+        $history = $request->getSession()->get('chatbot_history', []);
+
+        return new JsonResponse([
+            'history' => $history,
+        ]);
+    }
+
+    #[Route('/chatbot/reset', name: 'app_chatbot_reset')]
+    public function reset(Request $request): JsonResponse
+    {
+        $request->getSession()->remove('chatbot_history');
+
+        return new JsonResponse(['status' => 'History cleared']);
     }
 }

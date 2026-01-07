@@ -2,11 +2,10 @@
 
 namespace App\Controller;
 
-use App\Entity\Sponsors;
+use App\Repository\SponsorsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use App\Repository\SponsorsRepository;
 
 final class SponsorsController extends AbstractController
 {

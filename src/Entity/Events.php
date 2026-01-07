@@ -58,7 +58,7 @@ class Events
     private Collection $participants;
 
     #[ORM\Column(type: Types::BLOB, nullable: true)]
-    private $cover = null;
+    private $cover;
 
     public function __construct()
     {
@@ -250,6 +250,7 @@ class Events
     {
         $typeLabel = $this->type->value;
         $date = $this->start_datetime->format('d/m/Y');
+
         return sprintf('[%s %s] %s', $typeLabel, $date, $this->title);
     }
 }

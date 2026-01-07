@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function appendMessage(role, text) {
         const messageDiv = document.createElement('div');
         messageDiv.classList.add('d-flex', 'mb-3');
-        
+
         const contentDiv = document.createElement('div');
         contentDiv.classList.add('p-3', 'rounded-3', 'shadow-sm');
         contentDiv.style.maxWidth = '80%';
@@ -43,12 +43,12 @@ document.addEventListener('DOMContentLoaded', function() {
         if (role === 'user') {
             messageDiv.classList.add('justify-content-end');
             contentDiv.classList.add('bg-primary', 'text-white');
-            contentDiv.innerHTML = text; 
+            contentDiv.innerHTML = text;
             contentDiv.textContent = text;
         } else {
             messageDiv.classList.add('justify-content-start');
             contentDiv.classList.add('bg-white', 'border');
-            contentDiv.innerHTML = marked.parse(text); 
+            contentDiv.innerHTML = marked.parse(text);
         }
 
         messageDiv.appendChild(contentDiv);
@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function() {
         appendMessage('user', message);
         userMessageInput.value = '';
         appendLoading();
-        
+
         userMessageInput.disabled = true;
         sendBtn.disabled = true;
 
