@@ -16,19 +16,19 @@ final class LoginCest
     }
 
     public function tryLogin(FunctionalTester $I): void
-    {
-        $u = UserFactory::createOne([
-            "username" => "Testing", 
-            "password" => "passwordtest",
-        ]);
+        {
+            $u = UserFactory::createOne([
+                "username" => "Testing", 
+                "password" => "passwordtest",
+            ]);
 
-        $I->amOnPage("/login");
+            $I->amOnPage("/login");
+            
+            $I->submitForm('form[name="login"]', [
+                'username' => 'Testing',
+                'password' => 'passwordtest',
+            ]);
 
-        $I->fillField('username', 'Testing');
-        $I->fillField('password', 'passwordtest');
-        $I->checkOption('#rememberMe');
-        $I->click('Connexion'); 
-
-        $I->seeCurrentRouteIs("app_profile");
-    }
+            $I->seeCurrentRouteIs("app_profile");
+        }
 }
