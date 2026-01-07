@@ -35,7 +35,7 @@ class ChatbotController extends AbstractController
             return new JsonResponse(['error' => 'Message is empty'], 400);
         }
 
-        $events = $eventsRepository->betterFindAll('');
+        $events = $eventsRepository->betterFindAll('', 0, 50);
 
         $annonces = $annoncesRepository->findAll();
         $sponsors = $sponsorsRepository->findAll();
