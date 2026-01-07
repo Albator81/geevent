@@ -30,27 +30,29 @@
         const meetingLayer = L.layerGroup();
 
         {% for event in events %}
-            var popupContent = `
-                <div >
-                    <strong>{{ event.title }}</strong><br>
-                    <small>{{ event.type.value }}</small><br>
-                    <small>{{ event.address }}</small><br>
-                    <small>{{ event.participants_count }} participants</small><br>
-                    <a href="{{ path('app_events_show', {id: event.id}) }}">Voir plus</a>
-                </div>
-            `;
+            {% if event.latitude is not null and event.longitude is not null %}
+                var popupContent = `
+                    <div >
+                        <strong>{{ event.title }}</strong><br>
+                        <small>{{ event.type.value }}</small><br>
+                        <small>{{ event.address }}</small><br>
+                        <small>{{ event.participants_count }} participants</small><br>
+                        <a href="{{ path('app_events_show', {id: event.id}) }}">Voir plus</a>
+                    </div>
+                `;
 
-            var marker = L.marker([{{ event.latitude }}, {{ event.longitude }}]).addTo(map)
-                .bindPopup(popupContent)
+                var marker = L.marker([{{ event.latitude }}, {{ event.longitude }}]).addTo(map)
+                    .bindPopup(popupContent)
 
-            marker.on('click', function(e) {
-                map.setView(e.latlng, map.getZoom() < 15 ? 15 : map.getZoom() , { animate: true });
-            });
+                marker.on('click', function(e) {
+                    map.setView(e.latlng, map.getZoom() < 15 ? 15 : map.getZoom() , { animate: true });
+                });
 
-            {% if event.type.name == 'MEETUP' %}
-                marker.addTo(meetupLayer);
-            {% else %}
-                marker.addTo(meetingLayer);
+                {% if event.type.name == 'MEETUP' %}
+                    marker.addTo(meetupLayer);
+                {% else %}
+                    marker.addTo(meetingLayer);
+                {% endif %}
             {% endif %}
         {% endfor %}
 

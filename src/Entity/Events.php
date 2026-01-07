@@ -23,10 +23,10 @@ class Events
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 9, scale: 6)]
+    #[ORM\Column(type: Types::DECIMAL, precision: 9, scale: 6, nullable: true)]
     private ?string $latitude = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 9, scale: 6)]
+    #[ORM\Column(type: Types::DECIMAL, precision: 9, scale: 6, nullable: true)]
     private ?string $longitude = null;
 
     #[ORM\Column]

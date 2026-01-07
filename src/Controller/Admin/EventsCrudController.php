@@ -76,9 +76,13 @@ class EventsCrudController extends AbstractCrudController
                 ->setStoredAsString(),
             AssociationField::new('sponsors')
                 ->autocomplete()
+                // Cette ligne permet que lédition des participants/sponsors soit fonctionnel
+                ->setFormTypeOption('by_reference', false)
                 ->setHelp('<strong>Recherche disponible uniquement par <b>Nom</b>.</strong>'),
             AssociationField::new('participants')
                 ->autocomplete()
+                // Cette ligne permet que lédition des participants/sponsors soit fonctionnel
+                ->setFormTypeOption('by_reference', false)
                 ->setHelp('<strong>Recherche disponible uniquement par <b>Username</b>.</strong>'),
         ];
     }
@@ -87,8 +91,6 @@ class EventsCrudController extends AbstractCrudController
     {
         $event = new Events();
         $event->setCreatedBy($this->getUser());
-        $event->setLatitude(0);
-        $event->setLongitude(0);
         return $event;
     }
 }
