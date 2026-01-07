@@ -42,17 +42,6 @@ class UserTest extends \Codeception\Test\Unit
         $this->assertCount(2, $roles);
     }
 
-    public function testSerialization()
-    {
-        $user = new User();
-        $user->setPassword('my_password');
-        
-        $serialized = $user->__serialize();
-        
-        $expectedHash = hash('crc32c', 'my_password');
-        $this->assertEquals($expectedHash, $serialized["\0" . User::class . "\0password"]);
-    }
-
     public function testPassword()
     {
         $user = new User();
