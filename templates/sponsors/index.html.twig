@@ -30,11 +30,34 @@
             </div>
         </{{ tagName }}>
         {% else %}
-            <div class="col-12 text-center">
+            <div class="col-12 text-center" style="grid-column: 1 / -1;">
                 <p>Aucun sponsor n'est enregistré pour le moment.</p>
             </div>
         {% endfor %}
     </div>
+    {% if maxPage > 1 %}
+        <div class="pagination-container">
+            <div class="d-flex justify-content-center align-items-center gap-3">
+                {% if currentPage > 1 %}
+                    <a href="{{ path('app_sponsors', {page: currentPage - 1}) }}" class="btn btn-outline-primary px-4">
+                        &lt; Précédent
+                    </a>
+                {% else %}
+                    <button class="btn btn-outline-secondary px-4" disabled>&lt; Précédent</button>
+                {% endif %}
+
+                <span class="text-muted fw-bold">Page {{ currentPage }} / {{ maxPage }}</span>
+
+                {% if currentPage < maxPage %}
+                    <a href="{{ path('app_sponsors', {page: currentPage + 1}) }}" class="btn btn-primary px-4">
+                        Suivant &gt;
+                    </a>
+                {% else %}
+                    <button class="btn btn-outline-secondary px-4" disabled>Suivant &gt;</button>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
     </div>
 
     <style>
@@ -49,7 +72,16 @@
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
             gap: 2rem;
             justify-items: center;
+            margin-bottom: 3rem;
         }
+
+        .pagination-container {
+            width: 100%;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+
         .sponsor-card {
             background: #fff;
             border-radius: 12px;
@@ -61,7 +93,6 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             text-decoration: none;
             color: inherit;
