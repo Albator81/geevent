@@ -13,7 +13,7 @@
 
         <div class="card-footer bg-white">
             <form id="chat-form" class="input-group">
-                <input type="text" id="user-message" class="form-control" placeholder="Votre message..." required autocomplete="off">
+                <input type="text" id="user-message" class="form-control" placeholder="Votre message..." required autocomplete="off" maxlength="2000">
                 <button class="btn btn-primary" type="submit" id="send-btn">
                     <i class="bi bi-send-fill"></i>
                 </button>
@@ -31,6 +31,24 @@ document.addEventListener('DOMContentLoaded', function() {
     const chatHistory = document.getElementById('chat-history');
     const userMessageInput = document.getElementById('user-message');
     const sendBtn = document.getElementById('send-btn');
+
+    fetch("{{ path('app_chatbot_history') }}")
+    .then((response) => {
+        if (!response.ok) {
+            appendMessage('bot', 'Erreur lors de la récupération de l\'historique')
+        }
+        return response.json();
+    })
+    .then((data) => {
+        if (data.history && Array.isArray(data.history)) {
+            data.history.forEach((message) => {
+                appendMessage(message.role, message.content);
+            });
+        }
+    })
+    .catch((error) => {
+        console.error('Erreur Fetch :', error);
+    });
 
     function appendMessage(role, text) {
         const messageDiv = document.createElement('div');
