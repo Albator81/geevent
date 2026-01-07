@@ -28,13 +28,10 @@ class SponsorsCrudController extends AbstractCrudController
             ImageField::new('logoPath', 'Logo')
                 // Ici on spécifie le dossier où EasyAdmin va stocker les fichiers car il ne seront pas dans le chemin par défaut "public/uploads/images"
                 ->setUploadDir('public/uploads/sponsors')
+                ->setBasePath('uploads/sponsors')
                 // Ici on renomme le fichier pour éviter les doublons
                 ->setUploadedFileNamePattern('[slug]-[timestamp].[extension]')
-                ->setRequired(false)
-                // si l'image est null on mets l'image par défault
-                ->formatValue(function ($value) {
-                    return empty($value) ? 'uploads/sponsors/default.png' : "uploads/sponsors/{$value}";
-                }),
+                ->setRequired(false),
             UrlField::new('website_url')->setHelp('<strong>Votre url doit être sous a forme: https://example.com</strong>'),
             FormField::addPanel(''),
             AssociationField::new('event', 'Sponsored Events')

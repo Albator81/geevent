@@ -77,9 +77,14 @@ class EventsCrudController extends AbstractCrudController
             AssociationField::new('participants')
                 ->autocomplete()
                 ->setHelp('<strong>Recherche disponible uniquement par <b>Titre</b> ou <b>Description</b> (le type et la date ne sont pas recherchables).</strong>'),
-
-            //ImageField::new('cover')
-            //    ->onlyOnForms(),
+            ImageField::new('cover')
+                ->onlyOnForms()
+                // Ici on spécifie le dossier où EasyAdmin va stocker les fichiers car il ne seront pas dans le chemin par défaut "public/uploads/images"
+                ->setUploadDir('public/uploads/events')
+                ->setBasePath('uploads/events')
+                // Ici on renomme le fichier pour éviter les doublons
+                ->setUploadedFileNamePattern('[slug]-[timestamp].[extension]')
+                ->setRequired(false),
         ];
     }
 }

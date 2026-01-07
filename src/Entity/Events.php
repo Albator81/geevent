@@ -57,8 +57,8 @@ class Events
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'eventsJoined')]
     private Collection $participants;
 
-    #[ORM\Column(type: Types::BLOB, nullable: true)]
-    private $cover = null;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $cover = null;
 
     public function __construct()
     {

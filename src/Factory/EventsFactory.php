@@ -37,7 +37,7 @@ final class EventsFactory extends PersistentProxyObjectFactory
     {
         // Date de début de l'event entre 2 semaines avant 
         $start = self::faker()->dateTimeBetween('-2 week', '+3 months');
-        $end = (clone $start)->modify('+ '.rand(10, 128).' hours');
+        $end = (clone $start)->modify('+ ' . rand(10, 128) . ' hours');
 
         // Coordonées dans Reims et ses alentours
         $lat = self::faker()->randomFloat(6, 49.20, 49.30);
@@ -45,8 +45,24 @@ final class EventsFactory extends PersistentProxyObjectFactory
 
         $address = HttpClient::create()->request('GET', "https://nominatim.openstreetmap.org/reverse?lat=$lat&lon=$lon&format=json")->toArray();
 
-        // Une cover random
-        $cover = self::faker()->boolean(75) ? HttpClient::create()->request('GET', "https://picsum.photos/1920/1080")->getContent() : null;
+        $coverFilename = null;
+
+        // 75% de chance d'avoir une image
+        if (self::faker()->boolean(75)) {
+            $publicDir = __DIR__ . '/../../public/uploads/events';
+
+            // Générer un nom unique
+            $filename = 'event-' . uniqid() . '.png';
+
+            // Télécharger l'image ou la laisse a null
+            try {
+                $content = HttpClient::create()->request('GET', "https://picsum.photos/1920/1080")->getContent();
+                file_put_contents($publicDir . '/' . $filename, $content);
+                $coverFilename = $filename;
+            } catch (\Exception $e) {
+                // Si le téléchargement échoue, on laisse null
+            }
+        }
 
         return [
             'title' => self::faker()->sentence(5),
@@ -60,7 +76,7 @@ final class EventsFactory extends PersistentProxyObjectFactory
             'type' => self::faker()->randomElement(Type::cases()),
             'sponsors' => SponsorsFactory::randomSet(rand(3, 6)),
             'participants' => UserFactory::randomSet(rand(2, 15)),
-            'cover' => $cover,
+            'cover' => $coverFilename,
         ];
     }
 

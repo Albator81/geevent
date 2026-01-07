@@ -71,7 +71,7 @@
                                     class="text-decoration-none bg-light rounded p-2 d-flex align-items-center justify-content-start shadow-sm"
                                     style="min-width: 160px;">
                                         <img
-                                            src="{{ asset('uploads/sponsors/' ~ sponsor.logoPath) }}"
+                                            src="{{ sponsor.logoPath ? asset('uploads/sponsors/' ~ sponsor.logoPath) : asset('uploads/sponsors/default.png') }}"
                                             alt="{{ sponsor.name }}"
                                             class="rounded-circle border me-2"
                                             style="width: 50px; height: 50px; object-fit: cover;">
@@ -121,7 +121,7 @@
         </div>
         <div class="col-lg-6 d-flex flex-column">
             <div class="ratio ratio-16x9 mb-3 rounded shadow-sm">
-                <img src="{{event.cover ? path('app_events_cover', {id: event.id}) : asset('default_cover.png')}}" class="card-img-top rounded" alt="Image de couverture de l'événement {{ event.title }}">
+                <img src="{{ event.cover ? asset('uploads/events/' ~ event.cover) : asset('uploads/events/default.png') }}" class="card-img-top" alt="Image de couverture de l'événement {{ event.title }}">
             </div>
 
             <div id="map" class="flex-grow-1 shadow rounded" style="min-height:400px;"></div>
