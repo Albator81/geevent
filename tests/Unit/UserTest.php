@@ -33,12 +33,10 @@ class UserTest extends \Codeception\Test\Unit
 
         $user->setRoles(['ROLE_ADMIN', 'ROLE_ADMIN']);
         $roles = $user->getRoles();
-        // Should contain ROLE_ADMIN and ROLE_USER, no duplicates
         $this->assertCount(2, $roles);
         $this->assertContains('ROLE_ADMIN', $roles);
         $this->assertContains('ROLE_USER', $roles);
 
-        // Test if ROLE_USER is added only once if already present
         $user->setRoles(['ROLE_USER', 'ROLE_ADMIN']);
         $roles = $user->getRoles();
         $this->assertCount(2, $roles);
@@ -51,7 +49,6 @@ class UserTest extends \Codeception\Test\Unit
         
         $serialized = $user->__serialize();
         
-        // The password in serialized data should be crc32c hashed
         $expectedHash = hash('crc32c', 'my_password');
         $this->assertEquals($expectedHash, $serialized["\0" . User::class . "\0password"]);
     }
