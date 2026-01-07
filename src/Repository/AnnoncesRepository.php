@@ -23,7 +23,7 @@ class AnnoncesRepository extends ServiceEntityRepository
         $qb->select([
             'a.id',
             'a.title',
-            'a.message',
+            'a.content',
             'a.sent_by',
             'a.sent_at',
             'u.username as creator_username',
