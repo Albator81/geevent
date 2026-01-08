@@ -14,6 +14,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
@@ -37,6 +38,7 @@ class EventsCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
+        $isCreation = $pageName === Crud::PAGE_NEW;
         return [
             IdField::new('id')
                 ->onlyOnIndex(),
@@ -69,8 +71,12 @@ class EventsCrudController extends AbstractCrudController
             TextField::new('created_by')
                 ->onlyOnIndex(),
             TextField::new('address')
+                ->onlyOnForms(),
+            BooleanField::new('updateCoordinates', 'Cochez cette case et sauvegardez pour automatiquement générer les coordonnées.')
                 ->onlyOnForms()
-                ->setHelp('Les coordonnées GPS seront automatiquement saisies si votre adresse est connue par nos services (OpenStreetMap Nominatim).'),
+                ->setFormTypeOption('data', $isCreation) // coché par défaut uniquement lors de la création de l'event
+                ->setFormTypeOption('mapped', false)
+                ->setHelp('Les coordonnées GPS seront uniquement saisies si votre adresse est connue par nos services (OpenStreetMap Nominatim).'),
             NumberField::new('latitude')
                 ->onlyOnForms()
                 ->setRequired(false)
@@ -105,17 +111,28 @@ class EventsCrudController extends AbstractCrudController
 
     public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
-        $this->getAndSetCoord($entityInstance);
+        $this->handleCoordsGen($entityInstance);
         parent::persistEntity($entityManager, $entityInstance);
     }
 
     public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
-        $this->getAndSetCoord($entityInstance);
+        $this->handleCoordsGen($entityInstance);
         parent::updateEntity($entityManager, $entityInstance);
     }
 
-    private function getAndSetCoord($entity): void
+    private function handleCoordsGen($entity): void
+    {
+        $request = $this->getContext()->getRequest();
+        $formData = $request->request->all('Events');
+        $shouldGenerate = $formData['updateCoordinates'] == '1';
+
+        if ($shouldGenerate) {
+            $this->setCoordsWithAddr($entity);
+        }
+    }
+
+    private function setCoordsWithAddr($entity): void
     {
         if (empty($entity->getAddress())) {
             return;
