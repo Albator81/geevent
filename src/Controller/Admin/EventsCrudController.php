@@ -76,7 +76,7 @@ class EventsCrudController extends AbstractCrudController
                 ->onlyOnForms()
                 ->setFormTypeOption('data', $isCreation) // coché par défaut uniquement lors de la création de l'event
                 ->setFormTypeOption('mapped', false)
-                ->setHelp('Les coordonnées GPS seront uniquement saisies si votre adresse est connue par nos services (OpenStreetMap Nominatim).'),
+                ->setHelp('Les coordonnées GPS seront uniquement saisies si votre adresse est connue par nos services (OpenStreetMap Nominatim).<br>Si coché il est inutile de remplir les champs <b>Latitude</b> et <b>Longitude</b>.'),
             NumberField::new('latitude')
                 ->onlyOnForms()
                 ->setRequired(false)
@@ -134,10 +134,6 @@ class EventsCrudController extends AbstractCrudController
 
     private function setCoordsWithAddr($entity): void
     {
-        if (empty($entity->getAddress())) {
-            return;
-        }
-
         // !! Futur nous, l'api nous interdit de faire une fonction d'auto complete ou on l'appelle a chaque lettre tappée !!
         $response = $this->httpClient->request('GET', 'https://nominatim.openstreetmap.org/search', [
             // Désactive la vérification SSL pour que ça marche sur localhost
