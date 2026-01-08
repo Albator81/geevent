@@ -75,13 +75,11 @@ class AnnoncesCrudController extends AbstractCrudController
 
     private function sendAnnouncementEmail(Annonces $annonce): void
     {
-        $users = $this->userRepository->findAll();
+        $users = $this->userRepository->findBy(["verified" => true]);
 
         $recipients = [];
         foreach ($users as $user) {
-            if ($user->isVerified()) {
-                $recipients[] = $user->getEmail();
-            }
+            $recipients[] = $user->getEmail();
         }
 
         if (empty($recipients)) {
