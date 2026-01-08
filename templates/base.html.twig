@@ -40,7 +40,7 @@
                     <form role="search" action="{{ path('app_events') }}" method="get" style="min-width: 300px;">
                         <div style="position: relative; margin-bottom: 0;">
                             <div class="input-group input-group-sm">
-                                <input class="form-control border-0 bg-light" type="search" placeholder="Rechercher un événement..." name="search" id="search" value="{{ search|default('') }}">
+                                <input class="form-control border-0 bg-light" type="search" placeholder="Rechercher un événement..." name="search" id="search" value="{{ search|default("") }}">
                                 <button class="btn btn-primary" type="submit" title="Rechercher">
                                     <i class="bi bi-search"></i>
                                 </button>
@@ -74,7 +74,7 @@
                             </ul>
                         </div>
                     {% else %}
-                        <div class="hstack gap-3">
+                        <div class="hstack gap-3 d-none d-lg-flex">
                             <a href="{{ path('app_login') }}" class="btn btn-outline-primary d-flex align-items-center">
                                 <i class="bi bi-person-fill me-2"></i>
                                 Connexion

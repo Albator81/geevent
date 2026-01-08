@@ -68,4 +68,14 @@ class EventsRepository extends ServiceEntityRepository
             ->getQuery()
             ->getArrayResult();
     }
+    public function findUpcoming(int $limit = 3): array
+    {
+        return $this->createQueryBuilder('e')
+            ->andWhere('e.start_datetime > :now')
+            ->setParameter('now', new \DateTime())
+            ->orderBy('e.start_datetime', 'ASC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
 }
