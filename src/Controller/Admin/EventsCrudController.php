@@ -125,7 +125,7 @@ class EventsCrudController extends AbstractCrudController
     {
         $request = $this->getContext()->getRequest();
         $formData = $request->request->all('Events');
-        $shouldGenerate = $formData['updateCoordinates'] == '1';
+        $shouldGenerate = isset($formData['updateCoordinates']) && $formData['updateCoordinates'] == '1';
 
         if ($shouldGenerate) {
             $this->setCoordsWithAddr($entity);
@@ -158,6 +158,9 @@ class EventsCrudController extends AbstractCrudController
         if (!empty($data)) {
             $entity->setLatitude($data[0]['lat']);
             $entity->setLongitude($data[0]['lon']);
+        } else {
+            $entity->setLatitude(null);
+            $entity->setLongitude(null);
         }
     }
 }

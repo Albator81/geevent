@@ -101,7 +101,7 @@ class Events
         return $this->latitude;
     }
 
-    public function setLatitude(string $latitude): static
+    public function setLatitude(?string $latitude): static
     {
         $this->latitude = $latitude;
 
@@ -113,7 +113,7 @@ class Events
         return $this->longitude;
     }
 
-    public function setLongitude(string $longitude): static
+    public function setLongitude(?string $longitude): static
     {
         $this->longitude = $longitude;
 
