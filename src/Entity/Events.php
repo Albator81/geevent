@@ -22,6 +22,7 @@ class Events
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\Length(max: 5010, maxMessage: "Votre message doit faire 5000 caractères maximum.")]
     private ?string $description = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 9, scale: 6, nullable: true)]
