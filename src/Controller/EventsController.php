@@ -40,11 +40,15 @@ final class EventsController extends AbstractController
         }
 
         $events = $eventsRepository->betterFindAll($search, $page * 6, 6);
+        $totalEvents = count($eventsRepository->betterFindAll(''));
+        $maxPage = ceil($totalEvents / 6);
 
         // Par défaut, rendu de la liste classique
         return $this->render('events/index.html.twig', [
             'events' => $events,
             'search' => $search,
+            'currentPage' => $page,
+            'maxPage' => $maxPage - 1,
         ]);
     }
 
