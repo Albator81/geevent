@@ -35,7 +35,7 @@ final class EventsFactory extends PersistentProxyObjectFactory
     #[\Override]
     protected function defaults(): array|callable
     {
-        // Date de début de l'event entre 2 semaines avant 
+        // Date de début de l'event entre 2 semaines avant
         $start = self::faker()->dateTimeBetween('-2 week', '+3 months');
         $end = (clone $start)->modify('+ ' . rand(10, 128) . ' hours');
 

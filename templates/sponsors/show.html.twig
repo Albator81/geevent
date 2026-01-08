@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ sponsor.name }}{% endblock %}
+
+{% block body %}
+    <div class="container py-5">
+        <a href="{{ path('app_sponsors') }}" class="btn btn-outline-secondary mb-4">
+            &larr; Retour à la liste
+        </a>
+
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body text-center p-5">
+                        {% if sponsor.logoPath %}
+                            <img src="{{ asset('uploads/sponsors/' ~ sponsor.logoPath) }}"
+                                 alt="{{ sponsor.name }}"
+                                 class="img-fluid mb-4"
+                                 style="max-height: 200px; object-fit: contain;">
+                        {% else %}
+                            <div class="display-1 text-muted mb-4">📷</div>
+                        {% endif %}
+
+                        <h1 class="mb-3">{{ sponsor.name }}</h1>
+
+                        {% if sponsor.websiteUrl %}
+                            <a href="{{ sponsor.websiteUrl }}" target="_blank" rel="noopener" class="btn btn-primary px-4 rounded-pill">
+                                Visiter le site web <i class="bi bi-box-arrow-up-right ms-2"></i>
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="mt-5">
+                    <h3 class="border-bottom pb-2 mb-4">Événements sponsorisés</h3>
+
+                    {% if sponsor.event is not empty %}
+                        <div class="list-group shadow-sm">
+                            {% for event in sponsor.event %}
+                                <a href="{{ path('app_events_show', {id: event.id}) }}" class="list-group-item list-group-item-action p-3">
+                                    <div>
+                                        <h5 class="mb-1 text-primary">{{ event.title }}</h5>
+                                        <small class="text-muted">
+                                            {{ event.startDatetime|format_datetime('medium', 'short', locale: 'fr') }}
+                                        </small>
+                                    </div>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">
+                            Ce partenaire ne sponsorise aucun événement pour le moment.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -42,6 +42,10 @@ Elle remplace la dépendance à meetup.com en proposant une solution sur-mesure 
 - [Composer](https://getcomposer.org/download/)
 - [MySQL >= 8.0](https://www.mysql.com/downloads/)
 
+### Prérequis (tests)
+
+- Sqlite3
+
 ### 1. Clonage du projet
 
 ```bash

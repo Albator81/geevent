@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Events;
+use App\Entity\User;
 use App\Repository\EventsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -11,7 +12,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use App\Entity\User;
 
 final class EventsController extends AbstractController
 {
@@ -20,27 +20,35 @@ final class EventsController extends AbstractController
      */
     #[Route('/events', name: 'app_events')]
     public function index(
-        EventsRepository $eventsRepository, 
+        EventsRepository $eventsRepository,
         #[MapQueryParameter] string $display = '', // Récupère le paramètre ?display= dans l'URL
         #[MapQueryParameter] string $search = '',  // Récupère le paramètre ?search= dans l'URL
-        #[MapQueryParameter] int $page = 0         // Récupère le paramètre ?page= dans l'URL
+        #[MapQueryParameter] int $page = 0,         // Récupère le paramètre ?page= dans l'URL
     ): Response {
-        if ($page < 0) $page = 0;
+        if ($page < 0) {
+            $page = 0;
+        }
 
-        $events = $eventsRepository->betterFindAll($search, $page * 6, 6);
-        
         // Si le mode d'affichage est 'c' (carte), on utilise un template spécifique
         if ('c' === $display) {
+            $events = $eventsRepository->betterFindAll($search);
+
             return $this->render('events/carte.html.twig', [
                 'events' => $events,
                 'search' => $search,
             ]);
         }
 
+        $events = $eventsRepository->betterFindAll($search, $page * 6, 6);
+        $totalEvents = $eventsRepository->count([]);
+        $maxPage = ceil($totalEvents / 6);
+
         // Par défaut, rendu de la liste classique
         return $this->render('events/index.html.twig', [
             'events' => $events,
             'search' => $search,
+            'currentPage' => $page,
+            'maxPage' => $maxPage - 1,
         ]);
     }
 
@@ -48,7 +56,7 @@ final class EventsController extends AbstractController
      * Endpoint API pour la recherche d'évènements (retourne du JSON).
      */
     #[Route('/events/search', name: 'app_events_search')]
-    public function search(EventsRepository $eventsRepository, #[MapQueryParameter] string $search = ''): Response 
+    public function search(EventsRepository $eventsRepository, #[MapQueryParameter] string $search = ''): Response
     {
         // Récupère les 4 premiers résultats correspondant à la recherche
         $events = $eventsRepository->betterFindAll($search, 0, 4);
@@ -67,7 +75,7 @@ final class EventsController extends AbstractController
                 'address' => $event['address'],
                 'creator_username' => $event['creator_username'],
                 'sponsors_count' => (int) $event['sponsors_count'],
-                'participants_count'=> (int) $event['participants_count'],
+                'participants_count' => (int) $event['participants_count'],
             ];
         }, $events);
 
@@ -127,11 +135,13 @@ final class EventsController extends AbstractController
         // Sécurité : Impossible de rejoindre si l'évènement est déjà fini
         if ($event->getEndDatetime() < $now) {
             $this->addFlash('danger', "Impossible de rejoindre : l'évènement est terminé !");
+
             return $this->redirectToRoute('app_events_show', ['id' => $event->getId()]);
         }
 
         if ($user instanceof User && !$user->isVerified()) {
             $this->addFlash('danger', "Impossible de rejoindre : Votre email n'est pas vérifié");
+
             return $this->redirectToRoute('app_events_show', ['id' => $event->getId()]);
         }
 
@@ -160,6 +170,7 @@ final class EventsController extends AbstractController
         // Sécurité : On ne peut plus quitter un évènement terminé (logique métier)
         if ($event->getEndDatetime() < $now) {
             $this->addFlash('danger', "Impossible de quitter : l'évènement est terminé !");
+
             return $this->redirectToRoute('app_events_show', ['id' => $event->getId()]);
         }
 

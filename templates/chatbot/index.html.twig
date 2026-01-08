@@ -1,34 +1,26 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Assistant Sacrée Tech{% endblock %}
+{% block title %}ChatBot{% endblock %}
 
 {% block body %}
 <div class="container mt-4">
-    <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0"><i class="bi bi-robot me-2"></i>Assistant Virtuel</h5>
-                    <small>Sacrée Tech</small>
-                </div>
-                <div class="card-body overflow-auto" id="chat-history" style="height: 400px; background-color: #f8f9fa;">
-                    <div class="text-center text-muted small mt-2">
-                        Posez une question sur les événements ou l'association.
-                    </div>
-                </div>
-                <div class="card-footer bg-white">
-                    <form id="chat-form" class="d-flex gap-2">
-                        <input type="text" id="user-message" class="form-control" placeholder="Votre message..." required autocomplete="off">
-                        <button type="submit" class="btn btn-primary" id="send-btn">
-                            <i class="bi bi-send-fill"></i>
-                        </button>
-                    </form>
-                </div>
+    <div class="card mx-auto">
+        <div id="chat-history" class="card-body overflow-auto" style="height: 60vh">
+            <div class="d-flex flex-column align-items-start mb-3">
+                <div class="bg-light p-2 rounded shadow-sm">Bonjour ! Comment puis-je vous aider ?</div>
             </div>
+        </div>
+
+        <div class="card-footer bg-white">
+            <form id="chat-form" class="input-group">
+                <input type="text" id="user-message" class="form-control" placeholder="Votre message..." required autocomplete="off" maxlength="2000">
+                <button class="btn btn-primary" type="submit" id="send-btn">
+                    <i class="bi bi-send-fill"></i>
+                </button>
+            </form>
         </div>
     </div>
 </div>
-
 {% endblock %}
 
 {% block javascripts %}
@@ -40,10 +32,28 @@ document.addEventListener('DOMContentLoaded', function() {
     const userMessageInput = document.getElementById('user-message');
     const sendBtn = document.getElementById('send-btn');
 
+    fetch("{{ path('app_chatbot_history') }}")
+    .then((response) => {
+        if (!response.ok) {
+            appendMessage('bot', 'Erreur lors de la récupération de l\'historique')
+        }
+        return response.json();
+    })
+    .then((data) => {
+        if (data.history && Array.isArray(data.history)) {
+            data.history.forEach((message) => {
+                appendMessage(message.role, message.content);
+            });
+        }
+    })
+    .catch((error) => {
+        console.error('Erreur Fetch :', error);
+    });
+
     function appendMessage(role, text) {
         const messageDiv = document.createElement('div');
         messageDiv.classList.add('d-flex', 'mb-3');
-        
+
         const contentDiv = document.createElement('div');
         contentDiv.classList.add('p-3', 'rounded-3', 'shadow-sm');
         contentDiv.style.maxWidth = '80%';
@@ -51,12 +61,12 @@ document.addEventListener('DOMContentLoaded', function() {
         if (role === 'user') {
             messageDiv.classList.add('justify-content-end');
             contentDiv.classList.add('bg-primary', 'text-white');
-            contentDiv.innerHTML = text; 
+            contentDiv.innerHTML = text;
             contentDiv.textContent = text;
         } else {
             messageDiv.classList.add('justify-content-start');
             contentDiv.classList.add('bg-white', 'border');
-            contentDiv.innerHTML = marked.parse(text); 
+            contentDiv.innerHTML = marked.parse(text);
         }
 
         messageDiv.appendChild(contentDiv);
@@ -95,7 +105,7 @@ document.addEventListener('DOMContentLoaded', function() {
         appendMessage('user', message);
         userMessageInput.value = '';
         appendLoading();
-        
+
         userMessageInput.disabled = true;
         sendBtn.disabled = true;
 

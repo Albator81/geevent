@@ -3,8 +3,8 @@
 namespace App\Factory;
 
 use App\Entity\Sponsors;
-use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 use Symfony\Component\String\Slugger\AsciiSlugger;
+use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
 /**
  * @extends PersistentProxyObjectFactory<Sponsors>
@@ -34,12 +34,12 @@ final class SponsorsFactory extends PersistentProxyObjectFactory
     #[\Override]
     protected function defaults(): array|callable
     {
-        $sourceDir = __DIR__ . '/images';
-        $publicDir = __DIR__ . '/../../public/uploads/sponsors';
+        $sourceDir = __DIR__.'/images';
+        $publicDir = __DIR__.'/../../public/uploads/sponsors';
         $imageName = null;
-        $slugger = new AsciiSlugger(); //utilisé pour normalisé le nomage
+        $slugger = new AsciiSlugger(); // utilisé pour normalisé le nomage
 
-        $imagesDir = __DIR__ . '/images';
+        $imagesDir = __DIR__.'/images';
         $images = array_diff(scandir($imagesDir), ['.', '..']);
         $randomImage = $images[array_rand($images)];
 
@@ -50,7 +50,7 @@ final class SponsorsFactory extends PersistentProxyObjectFactory
         $sluggedFileName = $slugger->slug($filename)->lower();
         $sluggedImage = $sluggedFileName . uniqid() . '.' . strtolower($extension);
 
-        copy($sourceDir . '/' . $randomImage, $publicDir . '/' . $sluggedImage);
+        copy($sourceDir.'/'.$randomImage, $publicDir.'/'.$sluggedImage);
 
         return [
             'name' => self::faker()->company(),
