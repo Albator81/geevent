@@ -40,7 +40,7 @@ final class EventsController extends AbstractController
         }
 
         $events = $eventsRepository->betterFindAll($search, $page * 6, 6);
-        $totalEvents = count($eventsRepository->betterFindAll(''));
+        $totalEvents = $eventsRepository->count([]);
         $maxPage = ceil($totalEvents / 6);
 
         // Par défaut, rendu de la liste classique
