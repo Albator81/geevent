@@ -28,13 +28,7 @@
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="card h-100 shadow-sm border-0 event-card">
                             <div class="ratio ratio-16x9">
-                                {% if event.cover %}
-                                    <img src="{{ path('app_events_cover', {id: event.id}) }}" class="card-img-top object-fit-cover" alt="{{ event.title }}">
-                                {% else %}
-                                    <div class="d-flex align-items-center justify-content-center bg-secondary text-white">
-                                        <i class="bi bi-image fs-1"></i>
-                                    </div>
-                                {% endif %}
+                                <img src="{{ event.cover ? asset('uploads/events/' ~ event.cover) : asset('uploads/events/default.png') }}" class="card-img-top" alt="Image de couverture de l'événement {{ event.title }}">
                             </div>
 
                             <div class="card-body d-flex flex-column">
