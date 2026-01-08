@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Enum\Type;
 use App\Repository\EventsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -21,18 +22,20 @@ class Events
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\Length(max: 5010, maxMessage: "Votre message doit faire 5000 caractères maximum.")]
     private ?string $description = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 9, scale: 6)]
+    #[ORM\Column(type: Types::DECIMAL, precision: 9, scale: 6, nullable: true)]
     private ?string $latitude = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 9, scale: 6)]
+    #[ORM\Column(type: Types::DECIMAL, precision: 9, scale: 6, nullable: true)]
     private ?string $longitude = null;
 
     #[ORM\Column]
     private ?\DateTime $start_datetime = null;
 
     #[ORM\Column]
+    #[Assert\GreaterThan(propertyPath: 'start_datetime', message: "La date de fin doit être après la date de début.")]
     private ?\DateTime $end_datetime = null;
 
     #[ORM\ManyToOne(inversedBy: 'events')]
@@ -57,8 +60,8 @@ class Events
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'eventsJoined')]
     private Collection $participants;
 
-    #[ORM\Column(type: Types::BLOB, nullable: true)]
-    private $cover;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $cover = null;
 
     public function __construct()
     {
@@ -101,7 +104,7 @@ class Events
         return $this->latitude;
     }
 
-    public function setLatitude(string $latitude): static
+    public function setLatitude(?string $latitude): static
     {
         $this->latitude = $latitude;
 
@@ -113,7 +116,7 @@ class Events
         return $this->longitude;
     }
 
-    public function setLongitude(string $longitude): static
+    public function setLongitude(?string $longitude): static
     {
         $this->longitude = $longitude;
 
