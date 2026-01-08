@@ -19,12 +19,13 @@ class EventsRepository extends ServiceEntityRepository
     /**
      * Récupère une liste d'évènements optimisée sous forme de tableaux.
      * Inclut le nom du créateur et le décompte des sponsors/participants.
-     * * @param string $search Chaîne de caractères pour filtrer par titre ou description.
-     * @param int|null $start Index de départ (pour la pagination).
-     * @param int|null $end Index de fin (utilisé pour calculer le nombre de résultats).
-     * @return array Un tableau multidimensionnel (pas des objets Event).
+     *
+     * * @param string $search Chaîne de caractères pour filtrer par titre ou description
+     * @param int|null $start index de départ (pour la pagination)
+     *
+     * @return array un tableau multidimensionnel (pas des objets Event)
      */
-    public function betterFindAll(string $search, int $start = null, int $maxResults = null): array
+    public function betterFindAll(string $search, ?int $start = null, ?int $maxResults = null): array
     {
         $qb = $this->createQueryBuilder('e');
 
@@ -57,7 +58,7 @@ class EventsRepository extends ServiceEntityRepository
         }
 
         // Gestion de la limitation des résultats
-        if ($start !== null && $maxResults !== null) {
+        if (null !== $start && null !== $maxResults) {
             $qb->setFirstResult($start);
             $qb->setMaxResults($maxResults);
         }

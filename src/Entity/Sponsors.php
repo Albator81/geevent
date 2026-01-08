@@ -5,7 +5,6 @@ namespace App\Entity;
 use App\Repository\SponsorsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: SponsorsRepository::class)]
@@ -99,5 +98,10 @@ class Sponsors
         $this->event->removeElement($event);
 
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return sprintf('%s', $this->name);
     }
 }
