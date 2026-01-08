@@ -106,6 +106,10 @@ class EventsCrudController extends AbstractCrudController
     {
         $event = new Events();
         $event->setCreatedBy($this->getUser());
+        $start = new \DateTime('+1 day');
+        $end = (clone $start)->modify('+2 hours');
+        $event->setStartDatetime($start);
+        $event->setEndDatetime($end);
         return $event;
     }
 

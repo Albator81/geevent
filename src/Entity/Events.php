@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Enum\Type;
 use App\Repository\EventsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -33,6 +34,7 @@ class Events
     private ?\DateTime $start_datetime = null;
 
     #[ORM\Column]
+    #[Assert\GreaterThan(propertyPath: 'start_datetime', message: "La date de fin doit être après la date de début.")]
     private ?\DateTime $end_datetime = null;
 
     #[ORM\ManyToOne(inversedBy: 'events')]
