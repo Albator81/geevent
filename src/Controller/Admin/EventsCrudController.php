@@ -14,9 +14,15 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class EventsCrudController extends AbstractCrudController
 {
+    public function __construct(private HttpClientInterface $httpClient)
+    {
+    }
+
     public static function getEntityFqcn(): string
     {
         return Events::class;
@@ -25,7 +31,7 @@ class EventsCrudController extends AbstractCrudController
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
-            ->setSearchFields(['title', 'description'])
+            ->setSearchFields(['title', 'description', 'address'])
             ->setDefaultSort(['type' => 'ASC', 'start_datetime' => 'DESC']);
     }
 
@@ -63,17 +69,20 @@ class EventsCrudController extends AbstractCrudController
             TextField::new('created_by')
                 ->onlyOnIndex(),
             TextField::new('address')
-                ->onlyOnForms(),
+                ->onlyOnForms()
+                ->setHelp('Les coordonnées GPS seront automatiquement saisies si votre adresse est connue par nos services (OpenStreetMap Nominatim).'),
             NumberField::new('latitude')
                 ->onlyOnForms()
                 ->setRequired(false)
                 ->setNumDecimals(6)
-                ->setStoredAsString(),
+                ->setStoredAsString()
+                ->setHelp('Si non remplie, votre événement ne sera pas affiché sur la carte.'),
             NumberField::new('longitude')
                 ->onlyOnForms()
                 ->setRequired(false)
                 ->setNumDecimals(6)
-                ->setStoredAsString(),
+                ->setStoredAsString()
+                ->setHelp('Si non remplie, votre événement ne sera pas affiché sur la carte.'),
             AssociationField::new('sponsors')
                 ->autocomplete()
                 // Cette ligne permet que lédition des participants/sponsors soit fonctionnel
@@ -92,5 +101,46 @@ class EventsCrudController extends AbstractCrudController
         $event = new Events();
         $event->setCreatedBy($this->getUser());
         return $event;
+    }
+
+    public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
+    {
+        $this->getAndSetCoord($entityInstance);
+        parent::persistEntity($entityManager, $entityInstance);
+    }
+
+    public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
+    {
+        $this->getAndSetCoord($entityInstance);
+        parent::updateEntity($entityManager, $entityInstance);
+    }
+
+    private function getAndSetCoord($entity): void
+    {
+        if (empty($entity->getAddress())) {
+            return;
+        }
+
+        // !! Futur nous, l'api nous interdit de faire une fonction d'auto complete ou on l'appelle a chaque lettre tappée !!
+        $response = $this->httpClient->request('GET', 'https://nominatim.openstreetmap.org/search', [
+            // Désactive la vérification SSL pour que ça marche sur localhost
+            'verify_peer' => false, //comment that line on prod
+            'query' => [
+                'q' => $entity->getAddress(), //ici on donne l'adresse postal a l'API
+                'format' => 'json', //format de la réponce, json est facile a transformé en array, et nous permet de mettre une limit de réponces, donc on l'utilise
+                'limit' => 1 //ici on ne récupère que la localisation la plus pertinante, par exemple si il y a plusieurs résultats, seul le premier sera renvoyé
+            ],
+            'headers' => [
+                'User-Agent' => 'GeeventApp/1.0 (set-contact-mail-for-prod@gmail.com)' // !! ici il faudra qu'on spécifie une adresse email si on mets le truc en prod, car si notre app fait trop de requète on risque le ban IP puisque les dev n'auront aucun moyen de nous contacté (max 1req/sec)
+            ]
+        ]);
+
+        // Converti la réponse
+        $data = $response->toArray();
+
+        if (!empty($data)) {
+            $entity->setLatitude($data[0]['lat']);
+            $entity->setLongitude($data[0]['lon']);
+        }
     }
 }
