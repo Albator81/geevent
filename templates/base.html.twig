@@ -23,100 +23,111 @@
     {% block stylesheets %}{% endblock %}
 </head>
 <body class="d-flex flex-column min-vh-100 bg-light">
-    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
-        <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="/">
-                <img src="{{ asset('GeEvent_logo_img.png') }}" alt="Ge'Event logo" height="70" class="me-2">
-            </a>
-
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div id="navbarContent" class="collapse navbar-collapse w-100">
-
-                <div class="d-lg-flex w-100 align-items-center">
-
-                    <form role="search" action="{{ path('app_events') }}" method="get" style="min-width: 300px;">
-                        <div style="position: relative; margin-bottom: 0;">
-                            <div class="input-group input-group-sm">
-                                <input class="form-control border-0 bg-light" type="search" placeholder="Rechercher un événement..." name="search" id="search" value="{{ search|default("") }}">
-                                <button class="btn btn-primary" type="submit" title="Rechercher">
-                                    <i class="bi bi-search"></i>
-                                </button>
-                            </div>
-
-                            <div id="results" class="dropdown-menu" style="width: 100%;"></div>
-                        </div>
-                    </form>
-
-                    <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
-                        <li class="nav-item"><a href="{{ path('app_home') }}" class="nav-link text-dark">Accueil</a></li>
-                        <li class="nav-item"><a href="{{ path('app_annonces') }}" class="nav-link text-dark">Annonces</a></li>
-                        <li class="nav-item"><a href="{{ path('app_events') }}" class="nav-link text-dark">Events</a></li>
-                        <li class="nav-item"><a href="{{ path('app_events', {display: 'c'}) }}" class="nav-link text-dark">Carte</a></li>
-                        <li class="nav-item"><a href="{{ path('app_sponsors') }}" class="nav-link text-dark">Sponsors</a></li>
-                        <li class="nav-item"><a href="{{ path('app_chatbot') }}" class="nav-link text-dark">Chatbot</a></li>
-                    </ul>
-                    {% if app.user %}
-                        <div class="dropdown">
-                            <a href="#" class="btn btn-primary dropdown-toggle d-flex align-items-center" role="button" data-bs-toggle="dropdown">
-                                <i class="bi bi-person-circle me-2"></i>
-                                Bonjour, {{ app.user.username }}
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="{{ path('app_profile') }}"><i class="bi bi-gear-fill me-2"></i> Mon profil</a></li>
-                                {% if is_granted('ROLE_ADMIN') %}
-                                    <li><a class="dropdown-item" href="{{ path('admin') }}"><i class="bi bi-shield-lock-fill me-2"></i> Administration</a></li>
-                                {% endif %}
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item text-danger" href="{{ path('app_logout') }}"><i class="bi bi-box-arrow-right me-2"></i> Déconnexion</a></li>
-                            </ul>
-                        </div>
-                    {% else %}
-                        <div class="hstack gap-3 d-none d-lg-flex">
-                            <a href="{{ path('app_login') }}" class="btn btn-outline-primary d-flex align-items-center">
-                                <i class="bi bi-person-fill me-2"></i>
-                                Connexion
-                            </a>
-                            <div class="vr"></div>
-                            <a href="{{ path('app_register') }}" class="btn btn-secondary d-flex align-items-center">
-                                <i class="bi bi-person-plus-fill me-2"></i>
-                                Inscription
-                            </a>
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-    </nav>
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
     <div class="container">
-        {% if app.user %}
-            {% if not app.user.verified %}
-                <div class="alert alert-warning alert-dismissible fade show mt-3" role="alert">
-                    Veuillez vérfifier votre e-mail en cliquant sur le lien qui vous a été envoyé dans {{ app.user.email }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <a class="navbar-brand d-flex align-items-center" href="/">
+            <img src="{{ asset('GeEvent_logo_img.png') }}" alt="Ge'Event logo" height="70" class="me-2">
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div id="navbarContent" class="collapse navbar-collapse">
+
+            {# 1. BARRE DE RECHERCHE #}
+            <form role="search" action="{{ path('app_events') }}" method="get" class="d-flex mb-3 mb-lg-0" style="min-width: 250px;">
+                <div class="input-group input-group-sm w-100">
+                    <input class="form-control border-0 bg-light" type="search" placeholder="Rechercher..." name="search" id="search" value="{{ search|default("") }}">
+                    <button class="btn btn-primary" type="submit" title="Rechercher">
+                        <i class="bi bi-search"></i>
+                    </button>
                 </div>
-            {% endif %}
-        {% endif %}
-        {% for label, messages in app.flashes %}
-            {% for message in messages %}
-                <div class="alert alert-{{ label }} alert-dismissible fade show mt-3" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <div style="position: relative;">
+                    <div id="results" class="dropdown-menu" style="width: 100%; top: 100%; left: 0;"></div>
                 </div>
-            {% endfor %}
-        {% endfor %}
+            </form>
+
+            {# 2. LIENS DU MENU #}
+            {# CHANGEMENT : J'ai retiré 'gap-lg-5'. Les liens sont maintenant proches les uns des autres. #}
+            {# 'mx-auto' garde le bloc entier centré entre la recherche et le bouton. #}
+            <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a href="{{ path('app_home') }}" class="nav-link text-dark">Accueil</a></li>
+                <li class="nav-item"><a href="{{ path('app_annonces') }}" class="nav-link text-dark">Annonces</a></li>
+                <li class="nav-item"><a href="{{ path('app_events') }}" class="nav-link text-dark">Events</a></li>
+                <li class="nav-item"><a href="{{ path('app_events', {display: 'c'}) }}" class="nav-link text-dark">Carte</a></li>
+                <li class="nav-item"><a href="{{ path('app_sponsors') }}" class="nav-link text-dark">Sponsors</a></li>
+                <li class="nav-item"><a href="{{ path('app_chatbot') }}" class="nav-link text-dark">Chatbot</a></li>
+            </ul>
+
+            {# 3. DROPDOWN #}
+            <div class="dropdown mt-3 mt-lg-0">
+                {% if app.user %}
+                    {# CONNECTÉ #}
+                    <button class="btn btn-primary dropdown-toggle d-flex align-items-center w-100" type="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-person-circle me-2"></i>
+                        <span class="text-truncate" style="max-width: 150px;">{{ app.user.username }}</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="{{ path('app_profile') }}"><i class="bi bi-gear-fill me-2"></i> Mon profil</a></li>
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <li><a class="dropdown-item" href="{{ path('admin') }}"><i class="bi bi-shield-lock-fill me-2"></i> Administration</a></li>
+                        {% endif %}
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="{{ path('app_logout') }}"><i class="bi bi-box-arrow-right me-2"></i> Déconnexion</a></li>
+                    </ul>
+                {% else %}
+                    {# NON CONNECTÉ #}
+                    <button class="btn btn-outline-primary dropdown-toggle d-flex align-items-center w-100" type="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-person-fill me-2"></i>
+                        Espace membre
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center py-2" href="{{ path('app_login') }}">
+                                <i class="bi bi-box-arrow-in-right me-2 text-primary"></i> Se connecter
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center py-2" href="{{ path('app_register') }}">
+                                <i class="bi bi-person-plus me-2 text-secondary"></i> S'inscrire
+                            </a>
+                        </li>
+                    </ul>
+                {% endif %}
+            </div>
+
+        </div>
     </div>
-    <main class="container py-4">
-        {% block body %}{% endblock %}
-    </main>
-    <footer class="bg-dark text-white text-center py-3 mt-auto">
-        <p class="mb-0">&copy; {{ 'now'|date('Y') }} - Ge'Event</p>
-        <div><a href="{{ path('app_cgu') }}">Conditions générales d'utilisation</a></div>
-    </footer>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{{ asset('ajax_searchbar.js') }}"></script>
-    {% block javascripts %}{% endblock %}
+</nav>
+
+<div class="container">
+    {% if app.user %}
+        {% if not app.user.verified %}
+            <div class="alert alert-warning alert-dismissible fade show mt-3" role="alert">
+                Veuillez vérifier votre e-mail en cliquant sur le lien qui vous a été envoyé dans {{ app.user.email }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endif %}
+    {% endif %}
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }} alert-dismissible fade show mt-3" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endfor %}
+</div>
+<main class="container py-4">
+    {% block body %}{% endblock %}
+</main>
+<footer class="bg-dark text-white text-center py-3 mt-auto">
+    <p class="mb-0">&copy; {{ 'now'|date('Y') }} - Ge'Event</p>
+    <div><a href="{{ path('app_cgu') }}">Conditions générales d'utilisation</a></div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{{ asset('ajax_searchbar.js') }}"></script>
+{% block javascripts %}{% endblock %}
 </body>
 </html>
