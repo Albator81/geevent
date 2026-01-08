@@ -14,10 +14,10 @@
         }
 
         .dropdown-item {
-            white-space: nowrap; 
+            white-space: nowrap;
             overflow: hidden;
-            text-overflow: ellipsis; 
-            display: block; 
+            text-overflow: ellipsis;
+            display: block;
         }
     </style>
     {% block stylesheets %}{% endblock %}
@@ -28,24 +28,24 @@
             <a class="navbar-brand d-flex align-items-center" href="/">
                 <img src="{{ asset('GeEvent_logo_img.png') }}" alt="Ge'Event logo" height="70" class="me-2">
             </a>
-            
+
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            
+
             <div id="navbarContent" class="collapse navbar-collapse w-100">
-                
+
                 <div class="d-lg-flex w-100 align-items-center">
 
                     <form role="search" action="{{ path('app_events') }}" method="get" style="min-width: 300px;">
-                        <div style="position: relative; margin-bottom: 0;"> 
+                        <div style="position: relative; margin-bottom: 0;">
                             <div class="input-group input-group-sm">
-                                <input class="form-control border-0 bg-light" type="search" placeholder="Rechercher un événement..." name="search" id="search" value="{{ search|default("") }}"> 
+                                <input class="form-control border-0 bg-light" type="search" placeholder="Rechercher un événement..." name="search" id="search" value="{{ search|default("") }}">
                                 <button class="btn btn-primary" type="submit" title="Rechercher">
                                     <i class="bi bi-search"></i>
                                 </button>
                             </div>
-                            
+
                             <div id="results" class="dropdown-menu" style="width: 100%;"></div>
                         </div>
                     </form>
@@ -74,7 +74,7 @@
                             </ul>
                         </div>
                     {% else %}
-                        <div class="hstack gap-3">
+                        <div class="hstack gap-3 d-none d-lg-flex">
                             <a href="{{ path('app_login') }}" class="btn btn-outline-primary d-flex align-items-center">
                                 <i class="bi bi-person-fill me-2"></i>
                                 Connexion

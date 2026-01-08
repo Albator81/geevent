@@ -8,7 +8,7 @@
             <h1 class="display-4 fw-bold text-primary">Bienvenue sur Ge'Event</h1>
             <p class="lead text-muted">La plateforme de gestion d'événements collaborative.</p>
             {% if not app.user %}
-                <div class="mt-4">
+                <div class="mt-4 d-lg-none">
                     <a href="{{ path('app_login') }}" class="btn btn-primary btn-lg px-4 me-2">Se connecter</a>
                     <a href="{{ path('app_register') }}" class="btn btn-outline-primary btn-lg px-4">S'inscrire</a>
                 </div>
@@ -58,7 +58,7 @@
                     </div>
                 {% else %}
                     <div class="col-12">
-                        <div class="alert alert-info text-center">
+                        <div class="alert alert-light text-center border">
                             Aucun événement prévu pour le moment.
                         </div>
                     </div>

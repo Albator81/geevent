@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Enum\Target;
 use App\Entity\Annonces;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -40,4 +41,12 @@ class AnnoncesRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+    public function findLatestPublic(int $limit = 5): array
+    {
+        return $this->createQueryBuilder('a')
+            ->orderBy('a.sent_at', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
 }
