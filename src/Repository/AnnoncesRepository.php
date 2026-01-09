@@ -17,6 +17,30 @@ class AnnoncesRepository extends ServiceEntityRepository
         parent::__construct($registry, Annonces::class);
     }
 
+    public function betterFindAll(int $start = null, int $maxResults = null): array
+    {
+        $qb = $this->createQueryBuilder('a');
+
+        $qb->select([
+            'a.id',
+            'a.title',
+            'a.content',
+            'a.sent_at',
+            'u.username as creator_username',
+        ])
+            ->join('a.sent_by', 'u')
+            ->orderBy('a.sent_at', 'DESC');
+
+
+        // Gestion de la limitation des résultats
+        if ($start !== null && $maxResults !== null) {
+            $qb->setFirstResult($start);
+            $qb->setMaxResults($maxResults);
+        }
+
+        return $qb->getQuery()->getArrayResult();
+    }
+
     //    /**
     //     * @return Annonces[] Returns an array of Annonces objects
     //     */
