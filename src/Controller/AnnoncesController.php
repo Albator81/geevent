@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Enum\Target;
 use App\Entity\Annonces;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use App\Repository\AnnoncesRepository;
@@ -31,6 +32,15 @@ final class AnnoncesController extends AbstractController
     #[Route('/annonces/{id<\d+>}', name: 'app_annonces_show')]
     public function show(Annonces $annonce): Response
     {
+        if ($annonce->getSentTo() === Target::ALL) {
+            return $this->render('annonces/show.html.twig', [
+                'annonce' => $annonce,
+            ]);
+        }
+
+        $user = $this->getUser();
+        if ($user === null) return $this->redirectToRoute('app_home');
+
         return $this->render('annonces/show.html.twig', [
             'annonce' => $annonce,
         ]);
