@@ -9,6 +9,7 @@ Elle remplace la dépendance à meetup.com en proposant une solution sur-mesure 
 - La mise en avant des sponsors
 - Une communication fluide avec la communauté
 - Une interface d'administration complète
+- Elle est disponible à cette adresse : <http://10.31.32.38>
 
 ## Auteur(s)
 
