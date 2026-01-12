@@ -70,6 +70,13 @@ MAILER_DSN="smtp://LE_EMAIL:LE_MOTDEEPASSE@smtp.gmail.com:587?encryption=tls&aut
 CHATBOT_API_KEY="CLE_API_MISTRAL"
 ```
 
+**Important pour l'envoi d'emails (Gmail) :**
+> Pour que le `MAILER_DSN` fonctionne avec un compte Google, vous ne devez pas utiliser votre mot de passe habituel, mais un **Mot de passe d'application** :
+> 1.  Allez dans votre **Compte Google > Sécurité**.
+> 2.  Activez la **Validation en deux étapes** (si ce n'est pas déjà fait).
+> 3.  Cherchez **"Mots de passe d'application"** dans la barre de recherche.
+> 4.  Créez un mot de passe (nommez-le "GeEvent") et copiez les 16 caractères générés dans la variable `MAILER_DSN`.
+
 ### 4. Initialisation complète de la base de données
 
 Une commande personnalisée a été ajoutée pour tout faire en une seule fois :
