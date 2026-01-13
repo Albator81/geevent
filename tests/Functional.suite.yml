@@ -1,9 +1,0 @@
-actor: FunctionalTester
-modules:
-    enabled:
-        - Symfony:
-            app_path: 'src'
-            environment: 'test'
-        - Doctrine:
-            depends: Symfony
-step_decorators: ~
