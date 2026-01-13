@@ -27,6 +27,9 @@ class EventsCest
         $I->seeNumberOfElements('.card', 3);
     }
 
+    /**
+     * Teste la pagination des events dans la page des events
+     */
     public function testPagination(ControllerTester $I): void
     {
         UserFactory::createMany(10, ['isAdmin' => true]);
@@ -47,6 +50,9 @@ class EventsCest
         $I->seeNumberOfElements('.card', 4);
     }
 
+    /**
+     * Teste la feature d'autocomplétion des events pour la barre de recherche
+     */
     public function testSearchFilter(ControllerTester $I): void
     {
         UserFactory::createMany(10, ['isAdmin' => true]);
@@ -61,6 +67,9 @@ class EventsCest
         $I->dontSee('Match de Foot');
     }
 
+    /**
+     * Teste si la map apparait bien dans dans la carte des events 
+     */
     public function testMapView(ControllerTester $I): void
     {
         UserFactory::createMany(10, ['isAdmin' => true]);
@@ -74,6 +83,9 @@ class EventsCest
         $I->seeElement('#map');
     }
 
+    /**
+     * Teste la route qui recherche les events contenant un morceau de la recherche voulue
+     */
     public function testSearchApi(ControllerTester $I): void
     {
         UserFactory::createMany(10, ['isAdmin' => true]);
@@ -86,6 +98,9 @@ class EventsCest
         $I->seeResponseCodeIs(200);
     }
 
+    /**
+     * Teste l'affichage de la page des détails d'un event
+     */
     public function testShowEvent(ControllerTester $I): void
     {
         UserFactory::createMany(10, ['isAdmin' => true]);
@@ -105,6 +120,9 @@ class EventsCest
         $I->see(Type::APERO->value);
     }
 
+    /**
+     * Teste le fait que un utilisateur non connecté ne peut rejoindre un event
+     */
     public function testJoinEventAnonymous(ControllerTester $I): void
     {
         UserFactory::createMany(10, ['isAdmin' => true]);
@@ -117,6 +135,9 @@ class EventsCest
         $I->seeCurrentRouteIs('app_login');
     }
 
+    /**
+     * Teste le fait que un utilisateur avec un email vérifié peut rejoindre un event
+     */
     public function testJoinEventSuccessEmailOk(ControllerTester $I): void
     {
         UserFactory::createMany(10, ['isAdmin' => true]);
@@ -140,6 +161,9 @@ class EventsCest
         ]);
     }
 
+    /**
+     * Teste le fait que un utilisateur avec un email non vérifié ne peut pas rejoindre un event
+     */
     public function testJoinEventEchecEmailNon(ControllerTester $I): void
     {
         UserFactory::createMany(10, ['isAdmin' => true]);
@@ -157,5 +181,26 @@ class EventsCest
 
         $I->seeInCurrentUrl('/events/' . $event->getId());
         $I->see('Impossible de rejoindre : Votre email n\'est pas vérifié', '.alert-danger');
+    }
+
+    /**
+     * Teste le fait que un utilisateur ne peut pas rejoindre un event qui est fini
+     */
+    public function testJoinEventDatePasse(ControllerTester $I): void
+    {
+        UserFactory::createMany(10, ['isAdmin' => true]);
+        UserFactory::createMany(20); 
+        SponsorsFactory::createMany(10);
+
+        $user = UserFactory::createOne(['verified' => true]);
+        $event = EventsFactory::createOne([
+            'endDatetime' => new \DateTime('-2 days')
+        ]);
+
+        $I->amLoggedInAs($user->_real());
+        $I->amOnPage('/events/' . $event->getId() . '/join');
+
+        $I->seeInCurrentUrl('/events/' . $event->getId());
+        $I->see('Impossible de rejoindre : l\'évènement est terminé ! ', '.alert-danger');
     }
 }
