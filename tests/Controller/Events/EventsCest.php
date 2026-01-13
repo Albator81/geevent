@@ -1,26 +1,22 @@
 <?php
 
-declare(strict_types=1);
+namespace App\Tests\Controller\Events;
 
-
-namespace Tests\Functional;
-
-use Tests\Support\FunctionalTester;
 use App\Factory\EventsFactory;
 use App\Factory\UserFactory;
+use App\Factory\SponsorsFactory;
+use App\Tests\Support\ControllerTester;
 
-final class EventsCest
+class EventsCest
 {
-    public function _before(FunctionalTester $I): void
-    {
-        UserFactory::createMany(5);
-    }
-
     /**
      * Teste l'affichage de la liste des événements
      */
-    public function testIndexPage(FunctionalTester $I): void
+    public function testIndexPage(ControllerTester $I): void
     {
+        SponsorsFactory::createMany(6);
+        UserFactory::createMany(6, ['roles' => 'ROLE_ADMIN']);
+        UserFactory::createMany(6);
         EventsFactory::createMany(3);
 
         $I->amOnPage('/events');

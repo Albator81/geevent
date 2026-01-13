@@ -112,6 +112,7 @@
             "bin/console doctrine:schema:create --quiet --env=test",
             "php vendor/bin/codecept run"
         ],
+
         "test" : [
             "@test:phpcs",
             "@test:twigcs",
