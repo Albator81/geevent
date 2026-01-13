@@ -21,5 +21,22 @@ class ShowCest
         $I->see('Acme Corp', 'h1');
         $I->seeLink('Visiter le site web', 'https://acme.com');
     }
+
+    public function showDisplaysSponsoredEvents(ControllerTester $I): void
+    {
+        UserFactory::createMany(16, ['isAdmin' => true]);
+        SponsorsFactory::createMany(6);
+
+        $sponsor = SponsorsFactory::createOne(['name' => 'Big Pharma']);
+
+        EventsFactory::createOne([
+            'title' => 'Conférence Santé',
+            'sponsors' => [$sponsor]
+        ]);
+
+        $I->amOnPage('/sponsors/' . $sponsor->getId());
+        $I->see('Événements sponsorisés', 'h3');
+        $I->see('Conférence Santé', '.list-group-item');
+    }
 }
 
