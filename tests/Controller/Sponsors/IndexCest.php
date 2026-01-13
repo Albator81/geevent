@@ -31,4 +31,10 @@ class IndexCest
         $I->seeInCurrentUrl('page=2');
         $I->seeNumberOfElements('.sponsor-card', 2);
     }
+
+    public function emptyListShowsMessage(ControllerTester $I): void
+    {
+        $I->amOnPage('/sponsors');
+        $I->see("Aucun sponsor n'est enregistré pour le moment.");
+    }
 }
