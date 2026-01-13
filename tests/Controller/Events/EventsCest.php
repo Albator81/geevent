@@ -44,4 +44,18 @@ class EventsCest
         $I->seeInCurrentUrl('page=1');
         $I->seeNumberOfElements('.card', 4);
     }
+
+    public function testSearchFilter(ControllerTester $I): void
+    {
+        UserFactory::createMany(10, ['isAdmin' => true]);
+        UserFactory::createMany(20); 
+        SponsorsFactory::createMany(10);
+        
+        EventsFactory::createOne(['title' => 'Concert de Jazz']);
+        EventsFactory::createOne(['title' => 'Match de Foot']);
+
+        $I->amOnPage('/events?search=Jazz');
+        $I->see('Concert de Jazz');
+        $I->dontSee('Match de Foot');
+    }
 }
