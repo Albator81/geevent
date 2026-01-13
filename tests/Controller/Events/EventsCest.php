@@ -14,9 +14,9 @@ class EventsCest
      */
     public function testIndexPage(ControllerTester $I): void
     {
-        UserFactory::createMany(6, ['roles' => ['ROLE_ADMIN']]);
-        UserFactory::createMany(6);
-        SponsorsFactory::createMany(6);
+        UserFactory::createMany(10, ['isAdmin' => true]);
+        UserFactory::createMany(20); 
+        SponsorsFactory::createMany(10);
         EventsFactory::createMany(3);
 
         $I->amOnPage('/events');
@@ -25,5 +25,23 @@ class EventsCest
         $I->seeNumberOfElements('.card', 3);
     }
 
-    
+    public function testPagination(ControllerTester $I): void
+    {
+        UserFactory::createMany(10, ['isAdmin' => true]);
+        UserFactory::createMany(20); 
+        SponsorsFactory::createMany(10);
+
+        EventsFactory::createMany(10);
+
+        $I->amOnPage('/events');
+        $I->seeResponseCodeIs(200);
+        
+        $I->seeNumberOfElements('.card', 6);
+        
+        $I->see('Suivant');
+        $I->click('Suivant');
+        
+        $I->seeInCurrentUrl('page=1');
+        $I->seeNumberOfElements('.card', 4);
+    }
 }
