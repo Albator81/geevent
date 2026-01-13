@@ -50,12 +50,25 @@ class EventsCest
         UserFactory::createMany(10, ['isAdmin' => true]);
         UserFactory::createMany(20); 
         SponsorsFactory::createMany(10);
-        
+
         EventsFactory::createOne(['title' => 'Concert de Jazz']);
         EventsFactory::createOne(['title' => 'Match de Foot']);
 
         $I->amOnPage('/events?search=Jazz');
         $I->see('Concert de Jazz');
         $I->dontSee('Match de Foot');
+    }
+
+    public function testMapView(ControllerTester $I): void
+    {
+        UserFactory::createMany(10, ['isAdmin' => true]);
+        UserFactory::createMany(20); 
+        SponsorsFactory::createMany(10);
+
+        EventsFactory::createMany(2);
+        
+        $I->amOnPage('/events?display=c');
+        $I->seeResponseCodeIs(200);
+        $I->seeElement('#map');
     }
 }
