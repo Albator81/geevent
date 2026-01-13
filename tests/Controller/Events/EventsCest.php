@@ -71,4 +71,16 @@ class EventsCest
         $I->seeResponseCodeIs(200);
         $I->seeElement('#map');
     }
+
+    public function testSearchApi(ControllerTester $I): void
+    {
+        UserFactory::createMany(10, ['isAdmin' => true]);
+        UserFactory::createMany(20); 
+        SponsorsFactory::createMany(10);
+
+        EventsFactory::createOne(['title' => 'Unique Event']);
+
+        $I->amOnPage('/events/search?search=Unique');
+        $I->seeResponseCodeIs(200);
+    }
 }
