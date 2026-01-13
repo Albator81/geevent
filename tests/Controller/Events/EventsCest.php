@@ -103,4 +103,16 @@ class EventsCest
         $I->see('Super description de test');
         $I->see(Type::APERO->value);
     }
+
+    public function testJoinEventAnonymous(ControllerTester $I): void
+    {
+        UserFactory::createMany(10, ['isAdmin' => true]);
+        UserFactory::createMany(20); 
+        SponsorsFactory::createMany(10);
+        
+        $event = EventsFactory::createOne();
+        
+        $I->amOnPage('/events/' . $event->getId() . '/join');
+        $I->seeCurrentRouteIs('app_login');
+    }
 }
