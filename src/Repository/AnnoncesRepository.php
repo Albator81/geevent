@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Enum\Target;
 use App\Entity\Annonces;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -14,6 +15,30 @@ class AnnoncesRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Annonces::class);
+    }
+
+    public function betterFindAll(int $start = null, int $maxResults = null): array
+    {
+        $qb = $this->createQueryBuilder('a');
+
+        $qb->select([
+            'a.id',
+            'a.title',
+            'a.content',
+            'a.sent_at',
+            'u.username as creator_username',
+        ])
+            ->join('a.sent_by', 'u')
+            ->orderBy('a.sent_at', 'DESC');
+
+
+        // Gestion de la limitation des résultats
+        if ($start !== null && $maxResults !== null) {
+            $qb->setFirstResult($start);
+            $qb->setMaxResults($maxResults);
+        }
+
+        return $qb->getQuery()->getArrayResult();
     }
 
     //    /**
@@ -40,4 +65,12 @@ class AnnoncesRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+    public function findLatestPublic(int $limit = 5): array
+    {
+        return $this->createQueryBuilder('a')
+            ->orderBy('a.sent_at', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
 }

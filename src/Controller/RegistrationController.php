@@ -5,13 +5,13 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\RegistrationFormType;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
-use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Uid\Uuid;
 
 class RegistrationController extends AbstractController
@@ -36,7 +36,7 @@ class RegistrationController extends AbstractController
 
             $user->setIsAdmin(false);
             $user->setVerified(false);
-            $user->setVerificationToken(UUID::v4());
+            $user->setVerificationToken(Uuid::v4());
 
             $entityManager->persist($user);
             $entityManager->flush();
@@ -48,12 +48,13 @@ class RegistrationController extends AbstractController
                 ->to($e)
                 ->subject('Vérification Email GeEvent')
                 ->htmlTemplate('registration/email.html.twig')
-                ->context(["user" => $user]);
+                ->context(['user' => $user]);
 
             $mailer->send($email);
-            
-            $this->addFlash("info", "Un lien de vérification a été envoyé a l'adresse $e, veuillez cliquer sur le lien pour vérifier votre compte");
-            return $this->redirectToRoute("app_login");
+
+            $this->addFlash('info', "Un lien de vérification a été envoyé a l'adresse $e, veuillez cliquer sur le lien pour vérifier votre compte");
+
+            return $this->redirectToRoute('app_login');
         }
 
         return $this->render('registration/register.html.twig', [

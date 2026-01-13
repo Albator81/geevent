@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ annonce.title }}</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f9f9f9; margin: 0; padding: 20px;">
+
+    <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+        
+        <div style="background-color: #0d6efd; padding: 25px; text-align: center;">
+            <h1 style="color: #ffffff; margin: 0; font-size: 22px; letter-spacing: 1px;">Nouvelle Annonce</h1>
+        </div>
+
+        <div style="padding: 30px;">
+            <h2 style="color: #0d6efd; margin-top: 0;">{{ annonce.title }}</h2>
+            
+            <p style="font-size: 14px; color: #777; margin-bottom: 20px;">
+                Publié par <strong>{{ annonce.sentBy.username }}</strong> le {{ annonce.sentAt|date('d/m/Y à H:i') }}
+            </p>
+
+            <div style="padding: 20px; background-color: #f8f9fa; border-radius: 5px; border-left: 4px solid #0d6efd; margin-bottom: 30px;">
+                {{ annonce.content|raw }}
+            </div>
+
+            <p style="text-align: center; margin: 30px 0;">
+                <a href="{{ url('app_annonces_show', {id: annonce.id}) }}" 
+                   style="display: inline-block; padding: 12px 24px; background-color: #0d6efd; color: #ffffff; text-decoration: none; border-radius: 4px; font-weight: bold;">
+                    Plus d'informations ici
+                </a>
+            </p>
+        </div>
+
+        <div style="background-color: #f1f1f1; padding: 15px; text-align: center; font-size: 12px; color: #888; border-top: 1px solid #eeeeee;">
+            <p style="margin: 0;">Cet email a été envoyé automatiquement par <strong>GeEvent</strong>.</p>
+        </div>
+
+    </div>
+
+</body>
+</html>

@@ -16,56 +16,66 @@ class EventsRepository extends ServiceEntityRepository
         parent::__construct($registry, Events::class);
     }
 
-    public function betterFindAll(): array
+    /**
+     * Récupère une liste d'évènements optimisée sous forme de tableaux.
+     * Inclut le nom du créateur et le décompte des sponsors/participants.
+     *
+     * * @param string $search Chaîne de caractères pour filtrer par titre ou description
+     * @param int|null $start index de départ (pour la pagination)
+     *
+     * @return array un tableau multidimensionnel (pas des objets Event)
+     */
+    public function betterFindAll(string $search, ?int $start = null, ?int $maxResults = null): array
     {
         $qb = $this->createQueryBuilder('e');
 
-        return $qb->select([
-                'e.id',
-                'e.title',
-                'e.description',
-                'e.start_datetime',
-                'e.end_datetime',
-                'e.longitude',
-                'e.latitude',
-                'e.type',
-                'e.address',
-                'c.username as creator_username',
-                'COUNT(DISTINCT s.id) as sponsors_count',
-                'COUNT(DISTINCT p.id) as participants_count'
-            ])
+        $qb->select([
+            'e.id',
+            'e.title',
+            'e.description',
+            'e.start_datetime',
+            'e.end_datetime',
+            'e.longitude',
+            'e.latitude',
+            'e.type',
+            'e.address',
+            'e.cover',
+            'c.username as creator_username',
+            'COUNT(DISTINCT s.id) as sponsors_count',
+            'COUNT(DISTINCT p.id) as participants_count',
+        ])
             ->join('e.created_by', 'c')
             ->leftJoin('e.sponsors', 's')
             ->leftJoin('e.participants', 'p')
             ->groupBy('e.id')
-            ->addGroupBy('c.username')
-            ->orderBy('e.end_datetime', 'DESC')
+            ->addGroupBy('c.username');
+
+        // Système de recherche
+        if ('' != $search) {
+            $qb->where('e.title LIKE :search')
+                ->orWhere('e.description LIKE :search')
+                ->setParameter('search', '%'.$search.'%');
+        }
+
+        // Gestion de la limitation des résultats
+        if (null !== $start && null !== $maxResults) {
+            $qb->setFirstResult($start);
+            $qb->setMaxResults($maxResults);
+        }
+
+        // Tri par date de fin décroissante et exécution de la requête
+        return $qb->orderBy('e.end_datetime', 'DESC')
             ->getQuery()
             ->getArrayResult();
     }
-
-    //    /**
-    //     * @return Events[] Returns an array of Events objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('e')
-    //            ->andWhere('e.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('e.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?Events
-    //    {
-    //        return $this->createQueryBuilder('e')
-    //            ->andWhere('e.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function findUpcoming(int $limit = 3): array
+    {
+        return $this->createQueryBuilder('e')
+            ->andWhere('e.start_datetime > :now')
+            ->setParameter('now', new \DateTime())
+            ->orderBy('e.start_datetime', 'ASC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
 }

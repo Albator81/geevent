@@ -5,7 +5,6 @@ namespace App\Entity;
 use App\Repository\SponsorsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: SponsorsRepository::class)]
@@ -19,8 +18,8 @@ class Sponsors
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column(type: Types::BLOB)]
-    private $logo;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $logoPath = null;
 
     #[ORM\Column(length: 255)]
     private ?string $website_url = null;
@@ -46,21 +45,21 @@ class Sponsors
         return $this->name;
     }
 
-    public function setName(string $name): static
+    public function setName(string $path): static
     {
-        $this->name = $name;
+        $this->name = $path;
 
         return $this;
     }
 
-    public function getLogo()
+    public function getLogoPath(): ?string
     {
-        return $this->logo;
+        return $this->logoPath;
     }
 
-    public function setLogo($logo): static
+    public function setLogoPath(?string $logoPath): static
     {
-        $this->logo = $logo;
+        $this->logoPath = $logoPath;
 
         return $this;
     }
@@ -99,5 +98,10 @@ class Sponsors
         $this->event->removeElement($event);
 
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return sprintf('%s', $this->name);
     }
 }

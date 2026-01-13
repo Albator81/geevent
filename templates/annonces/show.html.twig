@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ annonce.title }} | Détails de l'annonce{% endblock %}
+
+{% block body %}
+    <div class="text-center">
+        <h1 class="display-10 text-primary fw-bold mb-4">{{ annonce.title }}</h1>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm rounded p-4">
+                
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-start mb-3">
+                            <i class="bi bi-person-circle text-primary me-3 fs-5"></i>
+                            <div>
+                                <strong>Publié par :</strong><br>
+                                {{ annonce.sentBy.username }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-start mb-3">
+                            <i class="bi bi-calendar-check text-primary me-3 fs-5"></i>
+                            <div>
+                                <strong>Date de publication :</strong><br>
+                                {{ annonce.sentAt|format_datetime('long', 'short', locale: 'fr') }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="mb-4">
+
+                <div class="annonce-body">
+                    <h5 class="fw-bold mb-3 text-primary">Message</h5>
+                    <div class="text-muted lh-lg">
+                        {{ annonce.content|raw }}
+                    </div>
+                </div>
+
+                <div class="mt-5 pt-3 border-top d-flex justify-content-between">
+                    <a href="{{ path('app_annonces') }}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left me-2"></i>Retour à la liste
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

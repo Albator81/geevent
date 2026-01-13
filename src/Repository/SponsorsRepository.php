@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Sponsors;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -40,4 +41,14 @@ class SponsorsRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+    public function findPaginatedSponsors(int $page, int $limit): Paginator
+    {
+        $query = $this->createQueryBuilder('s')
+            ->orderBy('s.name', 'ASC')
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit)
+            ->getQuery();
+
+        return new Paginator($query);
+    }
 }
