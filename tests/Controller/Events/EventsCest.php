@@ -6,6 +6,7 @@ use App\Factory\EventsFactory;
 use App\Factory\UserFactory;
 use App\Factory\SponsorsFactory;
 use App\Tests\Support\ControllerTester;
+use App\Enum\Type;
 
 class EventsCest
 {
@@ -82,5 +83,24 @@ class EventsCest
 
         $I->amOnPage('/events/search?search=Unique');
         $I->seeResponseCodeIs(200);
+    }
+
+    public function testShowEvent(ControllerTester $I): void
+    {
+        UserFactory::createMany(10, ['isAdmin' => true]);
+        UserFactory::createMany(20); 
+        SponsorsFactory::createMany(10);
+
+        $event = EventsFactory::createOne([
+            'title' => 'Les tests c nul',
+            'description' => 'Super description de test',
+            'type' => Type::APERO,
+        ]);
+
+        $I->amOnPage('/events/' . $event->getId());
+        $I->seeResponseCodeIs(200);
+        $I->see('Les tests c nul', 'h1');
+        $I->see('Super description de test');
+        $I->see(Type::APERO->value);
     }
 }
