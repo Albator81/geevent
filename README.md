@@ -210,3 +210,25 @@ Pour voir rapidement votre agenda :
 3.  Vous y trouverez la liste des événements auxquels vous participez.
 
 
+---
+
+### 4. Système d'Annonces
+
+Les annonces permettent aux administrateurs de communiquer avec les utilisateurs. Il existe un système de ciblage pour restreindre la visibilité de certaines informations.
+
+### Types de visibilité
+Lors de la création d'une annonce, deux niveaux de confidentialité sont disponibles (définis dans `Target Enum`) :
+
+1.  **Tout le monde (`ALL`)** :
+    - **Cible :** Grand public.
+    - **Accès :** Visible par les visiteurs non connectés et les membres.
+    - **Usage :** Informations générales, promotion de l'association.
+
+2.  **Uniquement les membres (`MEMBERS`)** :
+    - **Cible :** Utilisateurs possédant un compte et connectés.
+    - **Accès :** Restreint. Si un visiteur tente d'accéder à une annonce réservée, il est automatiquement **redirigé vers la page d'accueil**.
+    - **Usage :** Codes promo, informations internes, organisation des AG.
+
+### Comportement sur le site
+- **Page Liste (`/annonces`)** : Affiche les annonces paginées (6 par page).
+- **Page Détail (`/annonces/{id}`)** : Le site vérifie automatiquement vos droits d'accès avant d'afficher le contenu.

@@ -14,7 +14,7 @@ final class AnnoncesController extends AbstractController
 {
     #[Route('/annonces', name: 'app_annonces')]
     public function index(
-        AnnoncesRepository $annoncesRepository, 
+        AnnoncesRepository $annoncesRepository,
         #[MapQueryParameter] int $page = 0 // Récupère le paramètre ?page= dans l'URL
     ): Response {
         if ($page < 0) $page = 0;
@@ -33,13 +33,14 @@ final class AnnoncesController extends AbstractController
     public function show(Annonces $annonce): Response
     {
         if ($annonce->getSentTo() === Target::ALL) {
+            // Affiche directement
             return $this->render('annonces/show.html.twig', [
                 'annonce' => $annonce,
             ]);
         }
 
         $user = $this->getUser();
-        if ($user === null) return $this->redirectToRoute('app_home');
+        if ($user === null) return $this->redirectToRoute('app_home'); // Bloque les non-membres
 
         return $this->render('annonces/show.html.twig', [
             'annonce' => $annonce,
