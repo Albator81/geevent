@@ -14,4 +14,13 @@ class AdminAccessCest
         $I->seeCurrentRouteIs('app_login');
     }
 
+    public function accessIsRestrictedToAdminUsers(ControllerTester $I): void
+    {
+        $user = UserFactory::createOne(['isAdmin' => false]);
+        $I->amLoggedInAs($user->_real());
+
+        $I->amOnPage('/admin');
+        $I->seeResponseCodeIs(HttpCode::FORBIDDEN);
+    }
+
 }
