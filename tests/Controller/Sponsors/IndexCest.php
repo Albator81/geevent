@@ -18,4 +18,17 @@ class IndexCest
         $I->seeNumberOfElements('.sponsor-card', 5);
         $I->see('Sponsor Test', '.sponsor-name');
     }
+
+    public function paginationWorks(ControllerTester $I): void
+    {
+        SponsorsFactory::createMany(10);
+
+        $I->amOnPage('/sponsors?page=1');
+        $I->seeNumberOfElements('.sponsor-card', 8);
+        $I->see('Page 1 / 2', '.pagination-container');
+
+        $I->click('Suivant');
+        $I->seeInCurrentUrl('page=2');
+        $I->seeNumberOfElements('.sponsor-card', 2);
+    }
 }
