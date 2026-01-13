@@ -26,7 +26,7 @@
     {% if maxPage > 1 %}
             <div class="pagination-container">
                 <div class="d-flex justify-content-center align-items-center gap-3">
-                    {% if currentPage > 1 %}
+                    {% if currentPage > 0 %}
                         <a href="{{ path('app_events', {page: currentPage - 1}) }}" class="btn btn-outline-primary px-4">
                             &lt; Précédent
                         </a>
@@ -34,7 +34,7 @@
                         <button class="btn btn-outline-secondary px-4" disabled>&lt; Précédent</button>
                     {% endif %}
 
-                    <span class="text-muted fw-bold">Page {{ currentPage }} / {{ maxPage }}</span>
+                    <span class="text-muted fw-bold">Page {{ currentPage + 1 }} / {{ maxPage + 1 }}</span>
 
                     {% if currentPage < maxPage %}
                         <a href="{{ path('app_events', {page: currentPage + 1}) }}" class="btn btn-primary px-4">

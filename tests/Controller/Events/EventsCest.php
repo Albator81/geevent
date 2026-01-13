@@ -14,9 +14,9 @@ class EventsCest
      */
     public function testIndexPage(ControllerTester $I): void
     {
-        SponsorsFactory::createMany(6);
-        UserFactory::createMany(6, ['roles' => 'ROLE_ADMIN']);
+        UserFactory::createMany(6, ['roles' => ['ROLE_ADMIN']]);
         UserFactory::createMany(6);
+        SponsorsFactory::createMany(6);
         EventsFactory::createMany(3);
 
         $I->amOnPage('/events');
@@ -24,4 +24,6 @@ class EventsCest
         $I->see('Liste des événements', 'h1');
         $I->seeNumberOfElements('.card', 3);
     }
+
+    
 }
