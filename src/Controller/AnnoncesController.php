@@ -19,7 +19,10 @@ final class AnnoncesController extends AbstractController
     ): Response {
         if ($page < 0) $page = 0;
 
-        $annonces = $annoncesRepository->betterFindAll($page * 6, 6);
+
+        $user = $this->getUser(); // Pour montrer les bonnes annonces
+
+        $annonces = $annoncesRepository->betterFindAll($page * 6, 6, $user !== null);
 
         return $this->render('annonces/index.html.twig', [
             'annonces' => $annonces,
