@@ -19,13 +19,16 @@ final class AnnoncesController extends AbstractController
     ): Response {
         if ($page < 0) $page = 0;
 
-
         $user = $this->getUser(); // Pour montrer les bonnes annonces
+        $isMember = $user !== null;
+        $maxPage = $annoncesRepository->countVisible($isMember);
 
-        $annonces = $annoncesRepository->betterFindAll($page * 6, 6, $user !== null);
+        $annonces = $annoncesRepository->betterFindAll($page * 6, 6, $isMember);
 
         return $this->render('annonces/index.html.twig', [
             'annonces' => $annonces,
+            'currentPage' => $page,
+            'maxPage' => $maxPage,
         ]);
     }
 

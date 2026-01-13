@@ -48,6 +48,20 @@ class AnnoncesRepository extends ServiceEntityRepository
         return $qb->getQuery()->getArrayResult();
     }
 
+    public function countVisible(bool $isMember): int
+    {
+        $qb = $this->createQueryBuilder('a')
+            ->select('COUNT(a.id)');
+
+        if (!$isMember) {
+            $qb
+                ->andWhere('a.sent_to = :target')
+                ->setParameter('target', Target::ALL);
+        }
+
+        return (int) $qb->getQuery()->getSingleScalarResult();
+    }
+
     //    /**
     //     * @return Annonces[] Returns an array of Annonces objects
     //     */
