@@ -25,4 +25,10 @@ final class HomeController extends AbstractController
     {
         return $this->render('home/cgu.html.twig');
     }
+
+    #[Route('/mentions-legales', name: 'app_mentions_legales')]
+    public function mentions(): Response
+    {
+        return $this->render('legal/mentions_legales.html.twig');
+    }
 }
