@@ -119,8 +119,8 @@ class EventsCest
 
     public function testJoinEventSuccessEmailOk(ControllerTester $I): void
     {
-        UserFactory::createMany(10, ['isAdmin' => true, 'verified' => true]);
-        UserFactory::createMany(20, ['verified' => true]); 
+        UserFactory::createMany(10, ['isAdmin' => true]);
+        UserFactory::createMany(20); 
         SponsorsFactory::createMany(10);
 
         $user = UserFactory::createOne(['verified' => true]);
@@ -138,5 +138,24 @@ class EventsCest
         $I->seeInRepository(Events::class, [
             'id' => $event->getId(),
         ]);
+    }
+
+    public function testJoinEventEchecEmailNon(ControllerTester $I): void
+    {
+        UserFactory::createMany(10, ['isAdmin' => true]);
+        UserFactory::createMany(20); 
+        SponsorsFactory::createMany(10);
+
+        $user = UserFactory::createOne(['verified' => false]);
+        $event = EventsFactory::createOne([
+            'endDatetime' => new \DateTime('+2 days')
+        ]);
+
+        $I->amLoggedInAs($user->_real());
+        $I->amOnPage('/events/' . $event->getId());
+        $I->click('Rejoindre l\'évènement');
+
+        $I->seeInCurrentUrl('/events/' . $event->getId());
+        $I->see('Impossible de rejoindre : Votre email n\'est pas vérifié', '.alert-danger');
     }
 }
