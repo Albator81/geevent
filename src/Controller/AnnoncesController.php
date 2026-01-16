@@ -43,7 +43,8 @@ final class AnnoncesController extends AbstractController
             ]);
         }
 
-        if ($this->getUser() === null) {
+        $user = $this->getUser();
+        if ($user === null) {
             $this->addFlash('info', 'Vous devez vous connecter pour accéder à cette annonce.');
             return $this->redirectToRoute('app_home');
         }

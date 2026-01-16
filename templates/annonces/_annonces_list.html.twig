@@ -14,9 +14,19 @@
                         </span>
                     </div>
 
-                    <p class="card-text text-muted small flex-grow-1">
-                        {{ annonce.content|striptags|slice(0, 150) ~ (annonce.content|length > 150 ? '...' : '') }}
-                    </p>
+                    {% if annonce.sent_to.name == "MEMBERS" %}
+                        {% if app.user %}
+                            <p class="card-text text-muted small flex-grow-1">
+                                {{ annonce.content|striptags|slice(0, 150) ~ (annonce.content|length > 150 ? '...' : '') }}
+                            </p>
+                        {% else %}
+                            <p>Annonce privée</p>
+                        {% endif %}
+                    {% else %}
+                        <p class="card-text text-muted small flex-grow-1">
+                            {{ annonce.content|striptags|slice(0, 150) ~ (annonce.content|length > 150 ? '...' : '') }}
+                        </p>
+                    {% endif %}
 
                     <hr class="my-3">
 
