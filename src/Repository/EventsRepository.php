@@ -68,6 +68,7 @@ class EventsRepository extends ServiceEntityRepository
             ->getQuery()
             ->getArrayResult();
     }
+
     public function findUpcoming(int $limit = 3): array
     {
         return $this->createQueryBuilder('e')

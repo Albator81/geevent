@@ -48,7 +48,7 @@ final class SponsorsFactory extends PersistentProxyObjectFactory
         $extension = $fileInfo['extension'];
 
         $sluggedFileName = $slugger->slug($filename)->lower();
-        $sluggedImage = $sluggedFileName . uniqid() . '.' . strtolower($extension);
+        $sluggedImage = $sluggedFileName.uniqid().'.'.strtolower($extension);
 
         copy($sourceDir.'/'.$randomImage, $publicDir.'/'.$sluggedImage);
 
