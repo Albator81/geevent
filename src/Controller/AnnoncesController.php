@@ -43,8 +43,10 @@ final class AnnoncesController extends AbstractController
             ]);
         }
 
-        $user = $this->getUser();
-        if ($user === null) return $this->redirectToRoute('app_home'); // Bloque les non-membres
+        if ($this->getUser() === null) {
+            $this->addFlash('info', 'Vous devez vous connecter pour accéder à cette annonce.');
+            return $this->redirectToRoute('app_home');
+        }
 
         return $this->render('annonces/show.html.twig', [
             'annonce' => $annonce,
