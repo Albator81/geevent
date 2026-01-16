@@ -35,18 +35,17 @@
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div id="navbarContent" class="collapse navbar-collapse">
+        <div id="navbarContent" class="collapse navbar-collapse d-flex">
 
             {# 1. BARRE DE RECHERCHE #}
-            <form role="search" action="{{ path('app_events') }}" method="get" class="d-flex mb-3 mb-lg-0" style="min-width: 250px;">
-                <div class="input-group input-group-sm w-100">
+            <form role="search" action="{{ path('app_events') }}" method="get" class="d-flex mb-3 mb-lg-0">
+                <div class="input-group input-group-sm w-100 position-relative">
                     <input class="form-control border-0 bg-light" type="search" placeholder="Rechercher..." name="search" id="search" value="{{ search|default("") }}">
                     <button class="btn btn-primary" type="submit" title="Rechercher">
                         <i class="bi bi-search"></i>
                     </button>
-                </div>
-                <div style="position: relative;">
-                    <div id="results" class="dropdown-menu" style="width: 100%; top: 100%; left: 0;"></div>
+
+                    <div id="results" class="dropdown-menu w-100 shadow-sm" style="top: 100%; left: 0;"></div>
                 </div>
             </form>
 
