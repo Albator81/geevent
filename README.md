@@ -9,7 +9,7 @@ Elle remplace la dépendance à meetup.com en proposant une solution sur-mesure 
 - La mise en avant des sponsors
 - Une communication fluide avec la communauté
 - Une interface d'administration complète
-- Elle est disponible à cette adresse : <http://10.31.32.38>
+- Elle est à été déployée à cette adresse : <http://10.31.32.38>
 
 ## Auteur(s)
 
@@ -138,9 +138,9 @@ L’application est alors accessible sur : **<http://127.0.0.1:8000>**
 
 ### Données de test (fixtures)
 
-- 2 comptes admin :
+- 1 comptes admin principal :
   - username : `JeanJean` -> mot de passe : `jean`
-- Plusieurs utilisateurs normaux et administrateurs (15% d'administrateurs parmis les users)
+- Plusieurs utilisateurs normaux et administrateurs (15% d'administrateurs parmis les users) -> mot de passe : `test`
 - Plusieurs événements passés et à venir (avec coordonnées sur Reims)
 - Plusieurs sponsors avec liens vers des sites web et logo
 
