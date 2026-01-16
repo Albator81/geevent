@@ -5,10 +5,10 @@ namespace App\Entity;
 use App\Enum\Type;
 use App\Repository\EventsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
-use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: EventsRepository::class)]
 class Events
@@ -22,7 +22,7 @@ class Events
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Assert\Length(max: 5010, maxMessage: "Votre message doit faire 5000 caractères maximum.")]
+    #[Assert\Length(max: 5010, maxMessage: 'Votre message doit faire 5000 caractères maximum.')]
     private ?string $description = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 9, scale: 6, nullable: true)]
@@ -35,7 +35,7 @@ class Events
     private ?\DateTime $start_datetime = null;
 
     #[ORM\Column]
-    #[Assert\GreaterThan(propertyPath: 'start_datetime', message: "La date de fin doit être après la date de début.")]
+    #[Assert\GreaterThan(propertyPath: 'start_datetime', message: 'La date de fin doit être après la date de début.')]
     private ?\DateTime $end_datetime = null;
 
     #[ORM\ManyToOne(inversedBy: 'events')]

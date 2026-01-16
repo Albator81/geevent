@@ -40,7 +40,7 @@
             {# 1. BARRE DE RECHERCHE #}
             <form role="search" action="{{ path('app_events') }}" method="get" class="d-flex mb-3 mb-lg-0">
                 <div class="input-group input-group-sm w-100 position-relative">
-                    <input class="form-control border-0 bg-light" type="search" placeholder="Rechercher..." name="search" id="search" value="{{ search|default("") }}">
+                    <input class="form-control border-0 bg-light" type="search" placeholder="Rechercher..." name="search" id="search" value="{{ search|default('') }}">
                     <button class="btn btn-primary" type="submit" title="Rechercher">
                         <i class="bi bi-search"></i>
                     </button>

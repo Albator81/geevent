@@ -21,7 +21,7 @@
     </div>
 {% else %}
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 pb-5">
-        {% include "annonces/_annonces_list.html.twig" %}
+        {{ include('annonces/_annonces_list.html.twig') }}
     </div>
     <div class="pagination-container">
             <div class="d-flex justify-content-center align-items-center gap-3">
