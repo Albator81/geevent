@@ -42,4 +42,22 @@ class AnnoncesCest
         $I->seeInCurrentUrl('page=1');
         $I->seeNumberOfElements('.card', 4);
     }
+
+    /**
+     * Teste l'affichage de la page des détails d'une annonce publique
+     */
+    public function testShowAnnoncePublic(ControllerTester $I): void
+    {
+        UserFactory::createMany(10, ['isAdmin' => true]);
+        $annonce = AnnoncesFactory::createOne([
+            'title' => 'Annonce publique',
+            'content' => 'Contenu visible par tous.',
+            'sentTo' => Target::ALL,
+        ]);
+
+        $I->amOnPage('/annonces/' . $annonce->getId());
+        $I->seeResponseCodeIs(200);
+        $I->see('Annonce publique', 'h1');
+        $I->see('Contenu visible par tous.');
+    }
 }
