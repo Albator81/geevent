@@ -130,7 +130,8 @@ class EventsCest
         SponsorsFactory::createMany(10);
 
         $event = EventsFactory::createOne([
-            'endDatetime' => new \DateTime('+2 days')
+            'endDatetime' => new \DateTime('+2 days'),
+            "participants" => []
         ]);
         
         $I->amOnPage('/events/' . $event->getId() . '/join');
@@ -148,7 +149,8 @@ class EventsCest
 
         $user = UserFactory::createOne(['verified' => true]);
         $event = EventsFactory::createOne([
-            'endDatetime' => new \DateTime('+2 days')
+            'endDatetime' => new \DateTime('+2 days'),
+            "participants" => []
         ]);
 
         $I->amLoggedInAs($user->_real());
@@ -168,7 +170,8 @@ class EventsCest
 
         $user = UserFactory::createOne(['verified' => false]);
         $event = EventsFactory::createOne([
-            'endDatetime' => new \DateTime('+2 days')
+            'endDatetime' => new \DateTime('+2 days'),
+            "participants" => []
         ]);
 
         $I->amLoggedInAs($user->_real());
@@ -188,7 +191,8 @@ class EventsCest
 
         $user = UserFactory::createOne(['verified' => true]);
         $event = EventsFactory::createOne([
-            'endDatetime' => new \DateTime('-2 days')
+            'endDatetime' => new \DateTime('-2 days'),
+            "participants" => []
         ]);
 
         $I->amLoggedInAs($user->_real());
