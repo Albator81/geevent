@@ -14,7 +14,7 @@ class AnnoncesCest
      */
     public function testIndexPage(ControllerTester $I): void
     {
-        UserFactory::createMany(10, ['isAdmin' => true]);
+        UserFactory::createOne(['isAdmin' => true]);
         AnnoncesFactory::createMany(3);
 
         $I->amOnPage('/annonces');
@@ -28,7 +28,7 @@ class AnnoncesCest
      */
     public function testPagination(ControllerTester $I): void
     {
-        UserFactory::createMany(10, ['isAdmin' => true]);
+        UserFactory::createOne(['isAdmin' => true]);
         AnnoncesFactory::createMany(10);
 
         $I->amOnPage('/annonces');
@@ -48,7 +48,7 @@ class AnnoncesCest
      */
     public function testShowAnnoncePublic(ControllerTester $I): void
     {
-        UserFactory::createMany(10, ['isAdmin' => true]);
+        UserFactory::createOne(['isAdmin' => true]);
         $annonce = AnnoncesFactory::createOne([
             'title' => 'Annonce publique',
             'content' => 'Contenu visible par tous.',
@@ -59,5 +59,20 @@ class AnnoncesCest
         $I->seeResponseCodeIs(200);
         $I->see('Annonce publique', 'h1');
         $I->see('Contenu visible par tous.');
+    }
+
+    /**
+     * Teste qu'une annonce protégée redirige les utilisateurs anonymes
+     */
+    public function testShowAnnonceProtectedRedirectsAnonymous(ControllerTester $I): void
+    {
+        UserFactory::createOne(['isAdmin' => true]);
+        $annonce = AnnoncesFactory::createOne([
+            'sentTo' => Target::MEMBERS,
+        ]);
+
+        $I->amOnPage('/annonces/' . $annonce->getId());
+        $I->seeCurrentRouteIs('app_home');
+        $I->see('Vous devez vous connecter pour accéder à cette annonce.', '.alert-info');
     }
 }
