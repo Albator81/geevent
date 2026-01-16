@@ -26,6 +26,7 @@ class AnnoncesRepository extends ServiceEntityRepository
             'a.title',
             'a.content',
             'a.sent_at',
+            'a.sent_to',
             'u.username as creator_username',
         ])
             ->join('a.sent_by', 'u')

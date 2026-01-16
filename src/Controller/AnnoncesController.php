@@ -20,9 +20,13 @@ final class AnnoncesController extends AbstractController
         if ($page < 0) $page = 0;
 
         $annonces = $annoncesRepository->betterFindAll($page * 6, 6);
+        $totalAnnonces = $annoncesRepository->count([]);
+        $maxPage = ceil($totalAnnonces / 6);
 
         return $this->render('annonces/index.html.twig', [
             'annonces' => $annonces,
+            'currentPage' => $page,
+            'maxPage' => $maxPage - 1,
         ]);
     }
 
