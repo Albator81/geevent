@@ -14,14 +14,18 @@
                         </span>
                     </div>
 
-                    {% if annonce.sent_to.name == "MEMBERS" %}
-                        {% if app.user %}
-                            <p class="card-text text-muted small flex-grow-1">
-                                {{ annonce.content|striptags|slice(0, 150) ~ (annonce.content|length > 150 ? '...' : '') }}
-                            </p>
-                        {% else %}
-                            <p>Annonce privée</p>
-                        {% endif %}
+                    {% if annonce.sent_to.name == "MEMBERS" and not app.user %}
+                        <div class="flex-grow-1 d-flex align-items-center justify-content-center">
+                            <div class="text-center p-3 border rounded bg-light-subtle">
+                                <p class="small fw-bold mb-1 text-dark">Contenu privé</p>
+                                <p class="text-muted mb-2" style="font-size: 0.8rem;">
+                                    Réservé aux membres de la communauté.
+                                </p>
+                                <a href="{{ path('app_login') }}" class="btn btn-sm btn-link text-primary p-0 text-decoration-none fw-bold" style="font-size: 0.8rem;">
+                                    Se connecter pour voir
+                                </a>
+                            </div>
+                        </div>
                     {% else %}
                         <p class="card-text text-muted small flex-grow-1">
                             {{ annonce.content|striptags|slice(0, 150) ~ (annonce.content|length > 150 ? '...' : '') }}
