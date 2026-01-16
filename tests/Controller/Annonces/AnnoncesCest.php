@@ -75,4 +75,23 @@ class AnnoncesCest
         $I->seeCurrentRouteIs('app_home');
         $I->see('Vous devez vous connecter pour accéder à cette annonce.', '.alert-info');
     }
+
+    /**
+     * Teste qu'un utilisateur connecté peut voir une annonce protégée
+     */
+    public function testShowAnnonceProtectedShowsToLoggedInUser(ControllerTester $I): void
+    {
+        $user = UserFactory::createOne(['isAdmin' => true]);
+        $annonce = AnnoncesFactory::createOne([
+            'title' => 'Annonce pour membres',
+            'content' => 'Contenu visible uniquement par les membres.',
+            'sentTo' => Target::MEMBERS,
+        ]);
+
+        $I->amLoggedInAs($user->_real());
+        $I->amOnPage('/annonces/' . $annonce->getId());
+        $I->seeResponseCodeIs(200);
+        $I->see('Annonce pour membres', 'h1');
+        $I->see('Contenu visible uniquement par les membres.');
+    }
 }
