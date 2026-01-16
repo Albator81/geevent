@@ -35,7 +35,7 @@
                                 <div class="d-flex justify-content-between mb-2">
                                     <span class="badge bg-primary">{{ event.type.value }}</span>
                                     <small class="text-muted ms-2">
-                                        <i class="bi bi-clock"></i> {{ event.startDatetime|format_datetime('short', 'short', locale='fr') }}
+                                        <i class="bi bi-clock"></i> {{ event.startDatetime|format_datetime('short', 'short', locale: 'fr') }}
                                     </small>
                                 </div>
 
@@ -76,7 +76,7 @@
                                 <div class="d-flex justify-content-between align-items-start mb-2">
                                     <h5 class="card-title mb-0 fw-bold">{{ annonce.title }}</h5>
                                     <small class="text-muted text-end" style="min-width: 120px;">
-                                        {{ annonce.sentAt|format_datetime('relative_short', 'none', locale='fr') }}
+                                        {{ annonce.sentAt|format_datetime('relative_short', 'none', locale: 'fr') }}
                                     </small>
                                 </div>
                                 <h6 class="card-subtitle mb-2 text-primary small">

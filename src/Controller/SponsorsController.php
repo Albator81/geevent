@@ -3,11 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Sponsors;
-use Symfony\Component\HttpFoundation\Request;
+use App\Repository\SponsorsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use App\Repository\SponsorsRepository;
 
 final class SponsorsController extends AbstractController
 {
@@ -31,6 +31,7 @@ final class SponsorsController extends AbstractController
             'maxPage' => $maxPage,
         ]);
     }
+
     #[Route('/sponsors/{id}', name: 'app_sponsors_show', methods: ['GET'])]
     public function show(Sponsors $sponsor): Response
     {

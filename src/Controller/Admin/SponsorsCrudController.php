@@ -35,7 +35,7 @@ class SponsorsCrudController extends AbstractCrudController
             FormField::addPanel(''),
             AssociationField::new('event', 'Sponsored Events')
                 ->autocomplete()
-                ->setHelp('<strong>Recherche disponible uniquement par <b>Titre</b>, <b>Description</b> et <b>Adresse</b> (le type et la date ne sont pas recherchables).</strong>')
+                ->setHelp('<strong>Recherche disponible uniquement par <b>Titre</b>, <b>Description</b> et <b>Adresse</b> (le type et la date ne sont pas recherchables).</strong>'),
         ];
     }
 }

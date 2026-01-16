@@ -2,8 +2,8 @@
 
 namespace App\Repository;
 
-use App\Enum\Target;
 use App\Entity\Annonces;
+use App\Enum\Target;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -17,7 +17,7 @@ class AnnoncesRepository extends ServiceEntityRepository
         parent::__construct($registry, Annonces::class);
     }
 
-    public function betterFindAll(int $start = null, int $maxResults = null, bool $isMember = true): array
+    public function betterFindAll(?int $start = null, ?int $maxResults = null, bool $isMember = true): array
     {
         $qb = $this->createQueryBuilder('a');
 
@@ -33,14 +33,13 @@ class AnnoncesRepository extends ServiceEntityRepository
             ->orderBy('a.sent_at', 'DESC');
 
         if (!$isMember) {
-        $qb
-            ->andWhere('a.sent_to = :target')
-            ->setParameter('target', Target::ALL);
-    }
-
+            $qb
+                ->andWhere('a.sent_to = :target')
+                ->setParameter('target', Target::ALL);
+        }
 
         // Gestion de la limitation des résultats
-        if ($start !== null && $maxResults !== null) {
+        if (null !== $start && null !== $maxResults) {
             $qb->setFirstResult($start);
             $qb->setMaxResults($maxResults);
         }

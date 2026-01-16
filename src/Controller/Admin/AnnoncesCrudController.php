@@ -4,22 +4,22 @@ namespace App\Controller\Admin;
 
 use App\Entity\Annonces;
 use App\Enum\Target;
+use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use App\Repository\UserRepository;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
-use Doctrine\ORM\EntityManagerInterface;
 
 class AnnoncesCrudController extends AbstractCrudController
 {
     public function __construct(
         private MailerInterface $mailer,
-        private UserRepository $userRepository
+        private UserRepository $userRepository,
     ) {
     }
 
@@ -75,7 +75,7 @@ class AnnoncesCrudController extends AbstractCrudController
 
     private function sendAnnouncementEmail(Annonces $annonce): void
     {
-        $users = $this->userRepository->findBy(["verified" => true]);
+        $users = $this->userRepository->findBy(['verified' => true]);
 
         $recipients = [];
         foreach ($users as $user) {
@@ -89,7 +89,7 @@ class AnnoncesCrudController extends AbstractCrudController
         $email = (new TemplatedEmail())
             ->from('test@test.com')
             ->bcc(...$recipients)
-            ->subject('📢 Nouvelle annonce : ' . $annonce->getTitle())
+            ->subject('📢 Nouvelle annonce : '.$annonce->getTitle())
             ->htmlTemplate('annonces/email.html.twig')
             ->context([
                 'annonce' => $annonce,
@@ -97,6 +97,5 @@ class AnnoncesCrudController extends AbstractCrudController
             ]);
 
         $this->mailer->send($email);
-
     }
 }

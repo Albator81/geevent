@@ -16,11 +16,10 @@ class AdminAccessCest
 
     public function accessIsRestrictedToAdminUsers(ControllerTester $I): void
     {
-        $user = UserFactory::createOne(["roles" => []]);
+        $user = UserFactory::createOne(['roles' => []]);
         $I->amLoggedInAs($user->_real());
 
         $I->amOnPage('/admin');
         $I->seeResponseCodeIs(HttpCode::FORBIDDEN);
     }
-
 }
