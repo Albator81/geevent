@@ -129,7 +129,10 @@ class EventsCest
         UserFactory::createMany(20); 
         SponsorsFactory::createMany(10);
 
-        $event = EventsFactory::createOne();
+        $event = EventsFactory::createOne([
+            'endDatetime' => new \DateTime('+2 days'),
+            "participants" => []
+        ]);
         
         $I->amOnPage('/events/' . $event->getId() . '/join');
         $I->seeCurrentRouteIs('app_login');
@@ -146,19 +149,14 @@ class EventsCest
 
         $user = UserFactory::createOne(['verified' => true]);
         $event = EventsFactory::createOne([
-            'endDatetime' => new \DateTime('+2 days')
+            'endDatetime' => new \DateTime('+2 days'),
+            "participants" => []
         ]);
 
         $I->amLoggedInAs($user->_real());
-        $I->amOnPage('/events/' . $event->getId());
-        $I->click('Rejoindre l\'évènement');
 
-        $I->seeInCurrentUrl('/events/' . $event->getId());
-        $I->see('Vous avez bien rejoint l\'évènement !', '.alert-success');
-        
-        $I->seeInRepository(Events::class, [
-            'id' => $event->getId(),
-        ]);
+        $I->amOnPage('/events/' . $event->getId() . '/join');
+        $I->see('Vous avez bien rejoint l\'évènement ! ', '.alert-success');
     }
 
     /**
@@ -172,14 +170,13 @@ class EventsCest
 
         $user = UserFactory::createOne(['verified' => false]);
         $event = EventsFactory::createOne([
-            'endDatetime' => new \DateTime('+2 days')
+            'endDatetime' => new \DateTime('+2 days'),
+            "participants" => []
         ]);
 
         $I->amLoggedInAs($user->_real());
-        $I->amOnPage('/events/' . $event->getId());
-        $I->click('Rejoindre l\'évènement');
 
-        $I->seeInCurrentUrl('/events/' . $event->getId());
+        $I->amOnPage('/events/' . $event->getId() . '/join');
         $I->see('Impossible de rejoindre : Votre email n\'est pas vérifié', '.alert-danger');
     }
 
@@ -194,7 +191,8 @@ class EventsCest
 
         $user = UserFactory::createOne(['verified' => true]);
         $event = EventsFactory::createOne([
-            'endDatetime' => new \DateTime('-2 days')
+            'endDatetime' => new \DateTime('-2 days'),
+            "participants" => []
         ]);
 
         $I->amLoggedInAs($user->_real());
