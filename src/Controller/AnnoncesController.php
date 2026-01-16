@@ -19,16 +19,14 @@ final class AnnoncesController extends AbstractController
     ): Response {
         if ($page < 0) $page = 0;
 
-        $user = $this->getUser(); // Pour montrer les bonnes annonces
-        $isMember = $user !== null;
-        $maxPage = $annoncesRepository->countVisible($isMember);
-
-        $annonces = $annoncesRepository->betterFindAll($page * 6, 6, $isMember);
+        $annonces = $annoncesRepository->betterFindAll($page * 6, 6);
+        $totalAnnonces = $annoncesRepository->count([]);
+        $maxPage = ceil($totalAnnonces / 6);
 
         return $this->render('annonces/index.html.twig', [
             'annonces' => $annonces,
             'currentPage' => $page,
-            'maxPage' => $maxPage,
+            'maxPage' => $maxPage - 1,
         ]);
     }
 
@@ -46,7 +44,10 @@ final class AnnoncesController extends AbstractController
         }
 
         $user = $this->getUser();
-        if ($user === null) return $this->redirectToRoute('app_home'); // Bloque les non-membres
+        if ($user === null) {
+            $this->addFlash('info', 'Vous devez vous connecter pour accéder à cette annonce.');
+            return $this->redirectToRoute('app_home');
+        }
 
         return $this->render('annonces/show.html.twig', [
             'annonce' => $annonce,

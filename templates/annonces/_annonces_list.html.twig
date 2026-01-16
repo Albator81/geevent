@@ -1,48 +1,62 @@
 {% for annonce in annonces %}
-    <div class="col">
-        <div class="card h-100 shadow-sm hover-shadow transition-shadow">
-            <div class="card-body d-flex flex-column">
-                <div class="d-flex justify-content-between align-items-start mb-3">
-                    <h5 class="card-title mb-0">
-                        <a href="{{ path('app_annonces_show', { id: annonce.id }) }}"
-                            class="text-decoration-none text-primary fw-bold hovered-underline">
-                            {{ annonce.title }}
-                        </a>
-                    </h5>
-                    <span class="badge rounded-pill text-bg-info">
-                        Annonce
-                    </span>
-                </div>
+        <div class="col">
+            <div class="card h-100 shadow-sm hover-shadow transition-shadow">
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h5 class="card-title mb-0">
+                            <a href="{{ path('app_annonces_show', { id: annonce.id }) }}"
+                               class="text-decoration-none text-primary fw-bold hovered-underline">
+                                {{ annonce.title }}
+                            </a>
+                        </h5>
+                        <span class="badge rounded-pill text-bg-info">
+                            Annonce
+                        </span>
+                    </div>
 
-                <p class="card-text text-muted small flex-grow-1">
-                    {{ annonce.content|striptags|slice(0, 150) ~ (annonce.content|length > 150 ? '...' : '') }}
-                </p>
+                    {% if annonce.sent_to.name == "MEMBERS" and not app.user %}
+                        <div class="flex-grow-1 d-flex align-items-center justify-content-center">
+                            <div class="text-center p-3 border rounded bg-light-subtle">
+                                <p class="small fw-bold mb-1 text-dark">Contenu privé</p>
+                                <p class="text-muted mb-2" style="font-size: 0.8rem;">
+                                    Réservé aux membres de la communauté.
+                                </p>
+                                <a href="{{ path('app_login') }}" class="btn btn-sm btn-link text-primary p-0 text-decoration-none fw-bold" style="font-size: 0.8rem;">
+                                    Se connecter pour voir
+                                </a>
+                            </div>
+                        </div>
+                    {% else %}
+                        <p class="card-text text-muted small flex-grow-1">
+                            {{ annonce.content|striptags|slice(0, 150) ~ (annonce.content|length > 150 ? '...' : '') }}
+                        </p>
+                    {% endif %}
 
-                <hr class="my-3">
+                    <hr class="my-3">
 
-                <div class="text-muted small">
-                    <div class="d-flex align-items-center mb-2">
-                        <i class="bi bi-clock me-2 text-primary"></i>
-                        <div>
-                            Posté le {{ annonce.sent_at|format_datetime('medium', 'short', locale: 'fr') }}
+                    <div class="text-muted small">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="bi bi-clock me-2 text-primary"></i>
+                            <div>
+                                Posté le {{ annonce.sent_at|format_datetime('medium', 'short', locale: 'fr') }}
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-person-circle me-2 text-secondary"></i>
+                            <span>
+                                Par <strong>{{ annonce.creator_username }}</strong>
+                            </span>
                         </div>
                     </div>
 
-                    <div class="d-flex align-items-center">
-                        <i class="bi bi-person-circle me-2 text-secondary"></i>
-                        <span>
-                            Par <strong>{{ annonce.creator_username }}</strong>
-                        </span>
+                    <div class="mt-3 d-flex justify-content-end">
+                        <a href="{{ path('app_annonces_show', { id: annonce.id }) }}"
+                           class="btn btn-sm btn-outline-primary">
+                            Voir plus
+                        </a>
                     </div>
-                </div>
-
-                <div class="mt-3 d-flex justify-content-end">
-                    <a href="{{ path('app_annonces_show', { id: annonce.id }) }}"
-                        class="btn btn-sm btn-outline-primary">
-                        Voir plus
-                    </a>
                 </div>
             </div>
         </div>
-    </div>
 {% endfor %}
