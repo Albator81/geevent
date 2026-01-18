@@ -232,3 +232,9 @@ Lors de la création d'une annonce, deux niveaux de confidentialité sont dispon
 ### Comportement sur le site
 - **Page Liste (`/annonces`)** : Affiche les annonces paginées (6 par page).
 - **Page Détail (`/annonces/{id}`)** : Le site vérifie automatiquement vos droits d'accès avant d'afficher le contenu.
+
+### 5. Déploiment
+
+Le sité à été déployé sur une VM qui est sur Open Nebula
+
+- Adresse de déploiement de l'application : <http://2a4v3-31uvm0038.ad-urca.univ-reims.fr/>
