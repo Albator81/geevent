@@ -9,7 +9,7 @@ Elle remplace la dépendance à meetup.com en proposant une solution sur-mesure 
 - La mise en avant des sponsors
 - Une communication fluide avec la communauté
 - Une interface d'administration complète
-- Elle est à été déployée à cette adresse : <http://10.31.32.38>
+- Elle est à été déployée à cette adresse : <http://2a4v3-31uvm0038.ad-urca.univ-reims.fr/>
 
 ## Auteur(s)
 
@@ -232,3 +232,9 @@ Lors de la création d'une annonce, deux niveaux de confidentialité sont dispon
 ### Comportement sur le site
 - **Page Liste (`/annonces`)** : Affiche les annonces paginées (6 par page).
 - **Page Détail (`/annonces/{id}`)** : Le site vérifie automatiquement vos droits d'accès avant d'afficher le contenu.
+
+### 5. Déploiment
+
+Le sité à été déployé sur une VM qui est sur Open Nebula
+
+- Adresse de déploiement de l'application : <http://2a4v3-31uvm0038.ad-urca.univ-reims.fr/>
