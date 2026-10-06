@@ -1,240 +1,133 @@
-# Ge'Event – Plateforme de gestion d'événements pour Sacrée Tech
+# Ge'Event
 
-**Ge'Event** est l'application web officielle de gestion d'événements développée pour l'association **Sacrée Tech**, communauté tech rémoise.
+**An event management platform for a local tech community** — publish meetups and after-work events, let members sign up, showcase sponsors and keep everyone informed, without depending on meetup.com.
 
-Elle remplace la dépendance à meetup.com en proposant une solution sur-mesure permettant :
+Designed for **Sacrée Tech**, a tech association based in Reims (France), and built with **Symfony 7.3**, **Doctrine / MySQL**, **EasyAdmin** and **Leaflet**.
 
-- La publication d'événements à venir (Apéros & Meetups)
-- La gestion des inscriptions des participants
-- La mise en avant des sponsors
-- Une communication fluide avec la communauté
-- Une interface d'administration complète
-- Elle est à été déployée à cette adresse : <http://2a4v3-31uvm0038.ad-urca.univ-reims.fr/>
+![Ge'Event home page](docs/screenshots/home.jpg)
 
-## Auteur(s)
+> The interface is in French, like the community it was made for.
 
-- [**Hugo ALFREDO**](https://iut-info.univ-reims.fr/gitlab/alfr0002)
-- [**Adam BENAHMED**](https://iut-info.univ-reims.fr/gitlab/bena0167)
-- [**Nathan BUFFET**](https://iut-info.univ-reims.fr/gitlab/buff0030)
-- [**Eliott BETRY**](https://iut-info.univ-reims.fr/gitlab/betr0003)
+## Features
 
-## Stack Technique
+**For visitors and members**
 
-| Couche             | Technologie                  | URL                                                              |
-|--------------------|------------------------------|------------------------------------------------------------------|
-| Framework          | Symfony 6+                   | <https://symfony.com/>                                           |
-| ORM                | Doctrine ORM                 | <https://www.doctrine-project.org/projects/orm.html>             |
-| Base de données    | MySQL                        | <https://www.mysql.com/>                                         |
-| Templating         | Twig                         | <https://twig.symfony.com/>                                      |
-| Administration     | EasyAdmin Bundle             | <https://symfony.com/bundles/EasyAdminBundle/current/index.html> |
-| Cartographie       | Leaflet + OpenStreetMap      | <https://leafletjs.com/>                                         |
-| Envoi d'emails     | Symfony Mailer               | <https://symfony.com/doc/current/mailer.html>                    |
-| Tests              | PHPUnit                      | <https://phpunit.de/index.html>                                  |
-| Qualité de code    | PHP-CS-Fixer (PSR-12)        | <https://cs.symfony.com/>                                        |
-| Fixtures / Factory | FakerPHP + Zenstruck/Factory | <https://fakerphp.org/>                                          |
-| Chatbot            | Api Mistral                  | <https://docs.mistral.ai/api>                                    |
-| Markdown Chatbot   | Marked                       | <https://github.com/markedjs/marked>                             |
+- **Events** — browse upcoming meetups and *apéros* with cover image, dates, address, organiser, sponsors and number of participants; a live search bar suggests events as you type.
+- **Interactive map** — every geolocated event appears on an OpenStreetMap map of Reims, filterable by event type.
+- **Sign-ups** — members join or leave an event in one click and find their upcoming events on their profile. Joining requires a verified email address.
+- **Accounts** — registration with an email verification link, login with "remember me", profile editing (changing your email triggers a new verification).
+- **Announcements** — news from the association, either public or reserved for logged-in members, also sent by email to verified members when published.
+- **Sponsors** — a showcase page and a detail page per sponsor, with logo and website.
+- **Chatbot** — an assistant backed by the Mistral AI API that answers questions using the site's current events, announcements and sponsors as context, with a per-session conversation history.
 
-## Installation / Configuration
+**For administrators**
 
-### Prérequis
+- **Back office** built with EasyAdmin: manage events, users, sponsors and announcements.
+- **Automatic geocoding** — type an address and let the OpenStreetMap Nominatim API fill in the coordinates that place the event on the map.
+- **Uploads** — event covers and sponsor logos.
 
-- [PHP >= 8.1](https://www.php.net/downloads.php)
-- [Composer](https://getcomposer.org/download/)
-- [MySQL >= 8.0](https://www.mysql.com/downloads/)
+## Screenshots
 
-### Prérequis (tests)
+| Events list | Interactive map |
+| :---: | :---: |
+| ![Events](docs/screenshots/events.jpg) | ![Map](docs/screenshots/map.jpg) |
+| **Event page** | **Sponsors** |
+| ![Event](docs/screenshots/event.jpg) | ![Sponsors](docs/screenshots/sponsors.jpg) |
+| **Member profile** | **Administration (EasyAdmin)** |
+| ![Profile](docs/screenshots/profile.png) | ![Admin](docs/screenshots/admin.png) |
 
-- Sqlite3
+## Tech stack
 
-### 1. Clonage du projet
+| Layer | Tools |
+| :--- | :--- |
+| Backend | PHP 8.2+, Symfony 7.3, Doctrine ORM, Symfony Security, Symfony Forms |
+| Database | MySQL 8, Doctrine Migrations (SQLite for the test suite) |
+| Administration | EasyAdmin 4 |
+| Frontend | Twig, Bootstrap 5, vanilla JavaScript, AssetMapper (no Node build step) |
+| Maps | Leaflet + OpenStreetMap, Nominatim geocoding |
+| Email | Symfony Mailer |
+| AI | Mistral AI chat completions API, Marked for rendering answers |
+| Quality | Codeception functional tests, PHP-CS-Fixer, Twig-CS-Fixer, Foundry factories and fixtures |
 
-```bash
-git clone https://iut-info.univ-reims.fr/gitlab/buff0030/sae-si-geevent.git
-cd sae-si-geevent
+## Data model
+
+```mermaid
+erDiagram
+    USER ||--o{ EVENTS : organises
+    USER }o--o{ EVENTS : "takes part in"
+    USER ||--o{ ANNONCES : publishes
+    EVENTS }o--o{ SPONSORS : "is backed by"
 ```
 
-### 2. Installation des dépendances
+The code follows the standard Symfony layout: public controllers in `src/Controller`, EasyAdmin CRUD controllers in `src/Controller/Admin`, entities and repositories in `src/Entity` and `src/Repository`, and the Mistral client in `src/Service`.
+
+## Getting started
+
+### Requirements
+
+- PHP 8.2 or newer with the `intl`, `pdo_mysql`, `mbstring`, `openssl` and `curl` extensions (plus `pdo_sqlite` to run the tests)
+- [Composer](https://getcomposer.org/)
+- MySQL 8
+- [Symfony CLI](https://symfony.com/download) for the local web server
+- Optional: an SMTP account for emails and a [Mistral AI](https://console.mistral.ai/) API key for the chatbot
+
+### Installation
 
 ```bash
+git clone https://github.com/Albator81/geevent.git
+cd geevent
 composer install
 ```
 
-### 3. Configuration de l'environnement
+Create a `.env.local` file with your own settings:
 
-Copiez le fichier `.env` en `.env.local` et adaptez les variables :
-
-```dotenv
-# .env.local
+```env
 DATABASE_URL="mysql://root:@127.0.0.1:3306/ge_event?serverVersion=8.0&charset=utf8mb4"
-MAILER_DSN="smtp://LE_EMAIL:LE_MOTDEEPASSE@smtp.gmail.com:587?encryption=tls&auth_mode=login" #Pour gmail
-CHATBOT_API_KEY="CLE_API_MISTRAL"
+
+# Use null://null to disable outgoing email in development
+MAILER_DSN="smtp://USER:PASSWORD@smtp.example.com:587"
+CHATBOT_API_KEY="your-mistral-key"
 ```
 
-**Important pour l'envoi d'emails (Gmail) :**
-> Pour que le `MAILER_DSN` fonctionne avec un compte Google, vous ne devez pas utiliser votre mot de passe habituel, mais un **Mot de passe d'application** :
-> 1.  Allez dans votre **Compte Google > Sécurité**.
-> 2.  Activez la **Validation en deux étapes** (si ce n'est pas déjà fait).
-> 3.  Cherchez **"Mots de passe d'application"** dans la barre de recherche.
-> 4.  Créez un mot de passe (nommez-le "GeEvent") et copiez les 16 caractères générés dans la variable `MAILER_DSN`.
-
-### 4. Initialisation complète de la base de données
-
-Une commande personnalisée a été ajoutée pour tout faire en une seule fois :
+Create the database, run the migrations and load the demo data, then start the server:
 
 ```bash
 composer db
-```
-
-Cette commande exécute dans l’ordre :
-
-- Suppression de la base (si existante)
-- Création de la base
-- Exécution des migrations
-- Chargement des fixtures (utilisateurs, événements, sponsors, etc.)
-
-### 5. Lancement du serveur
-
-```bash
 composer start
 ```
 
-L’application est alors accessible sur : **<http://127.0.0.1:8000>**
+The app is now available at <http://127.0.0.1:8000>. Loading the fixtures needs an internet connection: event covers are downloaded from picsum.photos and addresses are looked up on Nominatim.
 
-### Commandes utiles
+### Demo accounts
 
-| Commande            | Description                                  |
-|---------------------|----------------------------------------------|
-| `composer start`    | Lance le serveur Symfony                     |
-| `composer db`       | Réinitialise complètement la base + fixtures |
-| `composer fix`      | Formate le code avec PHP-CS-Fixer            |
-| `composer test`     | Lance les tests PHPUnit                      |
-| `composer fixtures` | Recharge uniquement les fixtures             |
+| Role | Username | Password |
+| :--- | :--- | :--- |
+| Administrator | `JeanJean` | `jean` |
+| Other generated users | *(random)* | `test` |
 
-## Fonctionnalités implémentées
+The back office is at `/admin`. Fixture accounts start with an unverified email, and joining an event requires a verified one.
 
-### Front-Office (public)
+### Useful commands
 
-- Page d'accueil avec carte interactive (Leaflet) des événements à Reims
-- Liste et détail des événements (Apéros & Meetups)
-- Inscription / Connexion
-- Rejoindre / Quitter un événement (uniquement si email vérifié)
-- Affichage des sponsors par événement
-- Profil utilisateur
+| Command | Description |
+| :--- | :--- |
+| `composer start` | Start the Symfony server |
+| `composer db` | Reset the database and reload the fixtures |
+| `composer test` | Run code style checks and the Codeception test suite |
+| `composer test:codeception` | Run the functional tests only |
+| `composer fix` | Format PHP and Twig files |
 
-### Back-Office (administration – `/admin`)
+## Documentation
 
-- Gestion complète via **EasyAdmin** :
-  - Utilisateurs
-  - Événements (création, modification, géolocalisation automatique via OpenStreetMap)
-  - Sponsors (avec upload de logo)
-- Menu d’administration adapté selon le rôle
+A user guide (in French) covering accounts, event sign-ups and announcements is available in [docs/guide-utilisateur.md](docs/guide-utilisateur.md).
 
-### Sécurité & Authentification
+## About the project
 
-- Système d’authentification
-- Vérification d’email à l’inscription (lien unique)
-- Rôles : `ROLE_USER` (utilisateurs lambda), `ROLE_ADMIN` (administrateurs du site)
+Ge'Event was built as a team project during the second year of the BUT Informatique at the IUT de Reims (2025–2026), using feature branches and merge requests on the school's GitLab.
 
-### Données de test (fixtures)
+## Authors
 
-- 1 comptes admin principal :
-  - username : `JeanJean` -> mot de passe : `jean`
-- Plusieurs utilisateurs normaux et administrateurs (15% d'administrateurs parmis les users) -> mot de passe : `test`
-- Plusieurs événements passés et à venir (avec coordonnées sur Reims)
-- Plusieurs sponsors avec liens vers des sites web et logo
-
-## Captures d’écran (facultatif – à ajouter plus tard)
-
-- Page d’accueil avec carte
-- Détail d’un événement
-- Interface EasyAdmin
----
-
-## Guide Utilisateur - Ge'Event
-
-### 1. Compte Utilisateur
-
-Pour interagir avec la communauté (s'inscrire à des événements, devenir sponsor, etc.), un compte membre est nécessaire.
-
-#### Accès à l'espace membre
-L'accès se fait via la barre de navigation située en haut de chaque page :
-- **Sur ordinateur** : Cliquez sur le bouton **"Espace membre"** en haut à droite.
-- **Sur mobile** : Ouvrez le menu (icône ☰) puis appuyez sur **"Espace membre"**.
-
-Une fois connecté, ce menu vous permettra d'accéder à votre profil ou de vous déconnecter.
-
-### 2. Inscription et Vérification
-
-#### Procédure d'inscription
-1.  Dans le menu "Espace membre", sélectionnez **"S'inscrire"**.
-2.  Remplissez le formulaire d'inscription avec les informations suivantes :
-    - **Nom d'utilisateur** : Votre pseudo public (visible sur les événements et annonces).
-    - **Email** : Une adresse valide est obligatoire pour la sécurité du compte.
-    - **Mot de passe** : Doit contenir au minimum **6 caractères** pour être accepté.
-3.  Cochez la case **"J'accepte les conditions générales"**.
-4.  Cliquez sur le bouton de validation.
-
-#### Vérification de l'email (Obligatoire)
-Après l'inscription, votre compte est créé mais restreint. **Vous ne pourrez pas rejoindre d'événements tant que votre email n'est pas vérifié.**
-
-1.  Consultez votre boîte mail (vérifiez aussi vos spams).
-2.  Ouvrez l'email envoyé par *Ge'Event* ayant pour objet "Vérifiez votre email".
-3.  Cliquez sur le lien de confirmation présent dans l'email.
-4.  Vous serez redirigé vers le site : votre compte est désormais **vérifié** et pleinement fonctionnel.
-
-### 3. Gestion des inscriptions aux événements
-
-Une fois connecté et votre email vérifié, vous pouvez gérer votre participation.
-
-#### Rejoindre un événement
-1.  Parcourez la liste des événements via l'onglet **"Events"** ou la **"Carte"**.
-2.  Cliquez sur un événement pour afficher ses détails (date, lieu, description).
-3.  Si l'événement est à venir, cliquez sur le bouton **"Rejoindre l'événement"**.
-4.  Un message de succès confirmera votre inscription et vous apparaitrez dans la liste des participants.
-
-> **Attention :**
-> * Vous ne pouvez pas rejoindre un événement dont la date de fin est passée.
-> * Si un message d'erreur indique "Votre email n'est pas vérifié", référez-vous à la section 2 de ce guide.
-
-#### Se désinscrire
-En cas d'imprévu, vous pouvez libérer votre place :
-1.  Retournez sur la page de l'événement auquel vous êtes inscrit.
-2.  Le bouton affichera désormais **"Quitter l'événement"**.
-3.  Cliquez dessus pour annuler votre participation.
-
-#### Retrouver mes événements
-Pour voir rapidement votre agenda :
-1.  Cliquez sur votre pseudo dans le menu (en haut à droite).
-2.  Sélectionnez **"Mon profil"**.
-3.  Vous y trouverez la liste des événements auxquels vous participez.
-
-
----
-
-### 4. Système d'Annonces
-
-Les annonces permettent aux administrateurs de communiquer avec les utilisateurs. Il existe un système de ciblage pour restreindre la visibilité de certaines informations.
-
-### Types de visibilité
-Lors de la création d'une annonce, deux niveaux de confidentialité sont disponibles (définis dans `Target Enum`) :
-
-1.  **Tout le monde (`ALL`)** :
-    - **Cible :** Grand public.
-    - **Accès :** Visible par les visiteurs non connectés et les membres.
-    - **Usage :** Informations générales, promotion de l'association.
-
-2.  **Uniquement les membres (`MEMBERS`)** :
-    - **Cible :** Utilisateurs possédant un compte et connectés.
-    - **Accès :** Restreint. Si un visiteur tente d'accéder à une annonce réservée, il est automatiquement **redirigé vers la page d'accueil**.
-    - **Usage :** Codes promo, informations internes, organisation des AG.
-
-### Comportement sur le site
-- **Page Liste (`/annonces`)** : Affiche les annonces paginées (6 par page).
-- **Page Détail (`/annonces/{id}`)** : Le site vérifie automatiquement vos droits d'accès avant d'afficher le contenu.
-
-### 5. Déploiment
-
-Le sité à été déployé sur une VM qui est sur Open Nebula
-
-- Adresse de déploiement de l'application : <http://2a4v3-31uvm0038.ad-urca.univ-reims.fr/>
+- BUFFET Nathan
+- ALFREDO Hugo
+- BENAHMED Adam
+- BETRY Eliott
