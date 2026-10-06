@@ -43,7 +43,15 @@ final class EventsFactory extends PersistentProxyObjectFactory
         $lat = self::faker()->randomFloat(6, 49.20, 49.30);
         $lon = self::faker()->randomFloat(6, 3.97, 4.08);
 
-        $address = HttpClient::create()->request('GET', "https://nominatim.openstreetmap.org/reverse?lat=$lat&lon=$lon&format=json")->toArray();
+        // Nominatim limite à 1 requête/seconde et exige un User-Agent ; en cas d'échec on garde une adresse générique
+        try {
+            usleep(1100000);
+            $address = HttpClient::create()->request('GET', "https://nominatim.openstreetmap.org/reverse?lat=$lat&lon=$lon&format=json", [
+                'headers' => ['User-Agent' => 'GeEvent-fixtures/1.0'],
+            ])->toArray()['display_name'];
+        } catch (\Exception $e) {
+            $address = self::faker()->randomElement(['Place Drouet-d\'Erlon', 'Rue de Vesle', 'Boulevard de la Paix', 'Rue Gambetta', 'Avenue de Laon', 'Chaussée Bocquaine']).', 51100 Reims';
+        }
 
         $coverFilename = null;
 
@@ -69,7 +77,7 @@ final class EventsFactory extends PersistentProxyObjectFactory
             'description' => self::faker()->paragraphs(2, true),
             'latitude' => $lat,
             'longitude' => $lon,
-            'address' => $address['display_name'],
+            'address' => $address,
             'startDatetime' => $start,
             'endDatetime' => $end,
             'createdBy' => UserFactory::random(['isAdmin' => true]),
